@@ -33,6 +33,8 @@ class TokenGrouper(object):
         self._names.append(display_name)
         self._name2x[display_name] = x
 
+        return x
+
     def encode(self, tokens):
         """
         List of tokens -> list of munged tokens.

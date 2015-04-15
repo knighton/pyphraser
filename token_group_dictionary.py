@@ -76,6 +76,8 @@ class TokenGroupDictionary(object):
     def get_token_group(self, text):
         """
         Token group name -> list of strings that comprise the group.
+
+        Asserts if it doesn't know what to do with the name.
         """
         ss = self._key2list.get(text)
         if ss:

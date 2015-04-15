@@ -47,6 +47,7 @@ class TokenGroupingSequenceMatcher(object):
         return rr
 
     def match(self, tokens, allow_overlapping):
-        for spans, sequence_choice_lists in \
-                self._sequence_matcher.get_matches(tokens, allow_overlapping):
+        munged_tokens = self._token_grouper.encode(tokens)
+        for spans, sequence_choice_lists in self._sequence_matcher.get_matches(
+                munged_tokens, allow_overlapping):
             yield spans, sequence_choice_lists

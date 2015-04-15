@@ -1,4 +1,4 @@
-class TokenGroupDictionary(object):
+class TokenGroupOracle(object):
     """
     Holds knowledge about how to turn token group names into lists of tokens.
     """

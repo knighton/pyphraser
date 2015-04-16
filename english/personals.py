@@ -80,6 +80,18 @@ PERROW2INFO = {
 INFO2PERROW = v2k_from_k2v(PERRROW2INFO)
 
 
+def personals_table_row_tuples_to_try(self, number, person, personhood, gender):
+    """
+    The correct way to search the INFO2PERROW dict.
+
+    Note: none of the 'who' forms have a 'personhood = no' option.  Use 'what'
+    instead.
+    """
+    yield (number, person, personhood, gender)
+    yield (number, person, personhood, None)
+    yield (number, person, None, None)
+
+
 class Idiolect(object):
     """
     How to choose when the choice is arbitrary.
@@ -174,6 +186,24 @@ other2canonical = make_pronoun_aliases("""
 """)
 
 
+class PersonalPronounInfo(object):
+    def __init__(self, case, poss, number, person, personhood, gender):
+        self.case = case
+        self.poss = poss
+        self.number = number
+        self.person = person
+        self.personhood = personhood
+        self.gender = gender
+
+
+class PersonalDeterminerInfo(object):
+    def __init__(self, number, person, personhood, gender):
+        self.number = number
+        self.person = person
+        self.personhood = personhood
+        self.gender = gender
+
+
 class PersonalsManager(object):
     def __init__(self, personals_table, other2canonical, idiolect):
         self._personals_table = personals_table
@@ -185,13 +215,39 @@ class PersonalsManager(object):
         assert set(self._personals_table.rows()) == PersonalsRow.values
         assert set(self._personals_table.columns()) == PersonalsColumn.values
 
-    def _row_tuples_to_try(self, number, person, personhood, gender):
-        yield (number, person, personhood, gender)
-        yield (number, person, personhood, None)
-        yield (number, person, None, None)
+        self._pronoun_s2infos = defaultdict(list)
+        self._determiner_s2infos = defaultdict(list)
+        for row, column, s_or_none in self._personals_table.each():
+            if s_or_none is None:
+                continue
+            s = s_or_none
+            if column == PersonalsColumn.POS_DET:
+                number, person, personhood, gender = PERROW2INFO[row]
+                info = PersonalDeterminerInfo(
+                    number, person, personhood, gender)
+                d = self._determiner_s2infos
+            else:
+                case, poss = PRONOUN_PERCOL2INFO[column]
+                number, person, personhood, gender = PERROW2INFO[row]
+                info = PersonalPronounInfo(
+                    case, poss, number, person, personhood, gender)
+                d = self._pronoun_s2infos
+            d[s].append(info)
 
     def _decide_row_name(self, number, person, personhood, gender):
-        for key in self._row_tuples_to_try(number, person, personhood, gender):
+        """
+        (number, person, personhood, gender) -> row name
+
+        Decide which row in the table to use for this combination.
+
+        Notes:
+        * It will assert if you use 'personhood = no' for an interrogative form.
+          Use 'what' instead, not 'who'.
+        * Otherwise, personhood usually doesn't matter.
+        * Gender only changes the output if third person singular.
+        """
+        for key in personals_table_row_tuples_to_try(
+                number, person, personhood, gender):
             row_names = INFO2PERROW.get(key)
             if row_names:
                 if len(options) == 1:
@@ -202,18 +258,44 @@ class PersonalsManager(object):
         assert False
 
     def _decide_column_name(self, case, poss):
+        """
+        (case, poss) -> column name
+        """
         return PRONOUN_INFO2PERCOL[(case, poss)]
 
-    def get_personal_pronoun(self, case, poss, number, person, personhood, gender):
+    def encode_pronoun(self, ppi):
         """
-        (case, poss, number, person, personhood, gender) -> word or None.
-
-        Notes:
-        * It will assert if you use 'personhood = no' for an interrogative form.
-          Use 'what' instead, not 'who'.
-        * Otherwise, personhood usually doesn't matter.
-        * Gender only changes the output if third person singular.
+        (case, poss, number, person, personhood, gender) -> word or None
         """
-        row = self._decide_row_name(number, person, personhood, gender)
+        row = self._decide_row_name(
+            ppi.number, ppi.person, ppi.personhood, ppi.gender)
         column = self._decide_column_name(case, poss)
         return self._personals_table.get(row, column)
+
+    def encode_determiner(self, pdi):
+        """
+        (number, person, personhood, gender) -> word or None
+        """
+        row = self._decide_row_name(
+            pdi.number, pdi.person, pdi.personhood, pdi.gender)
+        column = PersonalsColumn.POS_DET
+        return self._personals_table.get(row, column)
+
+    def decode_pronoun(self, s):
+        """
+        word -> list of PersonalPronounInfo
+        """
+        return self._pronoun_s2infos.get(s, [])
+
+    def decode_determiner(self, s):
+        """
+        word -> list of PersonalDeterminerInfo
+        """
+        return self._determiner_s2infos.get(s, [])
+
+    def decode(self, s):
+        """
+        word list of (PersonalPronounInfo or PersonalDeterminerInfo)
+        """
+        return self.decode_pronoun() + self.decode_determiner()
+

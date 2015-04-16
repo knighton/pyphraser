@@ -16,6 +16,7 @@ class TokenGroupOracle(object):
         """.split()
 
         # No "her" because it would be shared across token groups.
+        # No "it" because it would be shared acorss token groups.
         nonher_nonfirst_person_objects = """
             u
             you
@@ -35,6 +36,14 @@ class TokenGroupOracle(object):
             their
         """.split()
 
+        # No "it" because it would be shared acorss token groups.
+        third_person_subject = """
+            he
+            she
+            one
+            they
+        """.split()
+
         self._verb2list = {
             'to be': to_be,
         }
@@ -44,6 +53,7 @@ class TokenGroupOracle(object):
             'nonher nonfirst person object': nonher_nonfirst_person_objects,
             'nonher nonfirst possessive pronoun':
                 nonher_nonfirst_possessive_pronouns,
+            'third person subject': third_person_subject,
         }
 
         self._check()

@@ -43,6 +43,7 @@ SubjectCategory = enum('SubjectCategory: I_OR_WE SOMEONE_ELSE RELIGIOUS')
 SUBJECTS, SUBJECT_CATS = annotated_lines(SubjectCategory, """
     (first person subject) -- i_or_we
     (third person subject) -- someone_else
+    it -- someone_else
     god -- religious
     satan -- religious
     allah -- religious
@@ -59,16 +60,22 @@ AUX_VERBS, AUX_VERB_CATS = annotated_lines(AuxVerbCategory, """
     (to plan) to -- future
     (to promise) (first person subject) (to be) going to -- future
     (to promise) (third person subject) (to be) going to -- future
+    (to promise) it (to be) going to -- future
     (to promise) (first person subject) (to be) gonna -- future
     (to promise) (third person subject) (to be) gonna -- future
+    (to promise) it (to be) gonna -- future
     (to promise) (first person subject) will -- future
     (to promise) (third person subject) will -- future
+    (to promise) it will -- future
     (to swear) (first person subject) (to be) going to -- future
     (to swear) (third person subject) (to be) going to -- future
+    (to swear) it (to be) going to -- future
     (to swear) (first person subject) (to be) gonna -- future
     (to swear) (third person subject) (to be) gonna -- future
+    (to swear) it (to be) gonna -- future
     (to swear) (first person subject) will -- future
     (to swear) (third person subject) will -- future
+    (to swear) it will -- future
     (to want) to -- desire
     wanna -- desire
     will -- future

@@ -1,7 +1,7 @@
 from util.enum import enum
 
 
-LinguisticNumber = enum('LinguisticNumber: SINGULAR PLURAL')
+LingNumber = enum('LingNumber: SINGULAR PLURAL')
 
 
-LinguisticPerson = enum('LinguisticPerson: FIRST SECOND THIRD')
+LingPerson = enum('LingPerson: FIRST SECOND THIRD')

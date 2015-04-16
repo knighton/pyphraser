@@ -1,4 +1,4 @@
-from english.base import LinguisticNumber, LinguisticPerson
+from english.base import LingNumber, LingPerson
 
 
 class ConjugationSpec(object):
@@ -35,11 +35,11 @@ class ConjugationSpec(object):
         return self._past_part
 
     def _make_index(self, person, number):
-        assert LinguisticPerson.is_valid(person)
-        assert LinguisticNumber.is_valid(number)
-        p = person - LinguisticPerson.first
+        assert LingPerson.is_valid(person)
+        assert LingNumber.is_valid(number)
+        p = person - LingPerson.first
         n = number - Number.first
-        return n * len(LinguisticPerson.values) + p
+        return n * len(LingPerson.values) + p
 
     def present(self, person, number):
         return self._presents[self._make_index(person, number)]

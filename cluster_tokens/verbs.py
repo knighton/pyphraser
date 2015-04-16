@@ -15,16 +15,17 @@ class ConjugationSpec(object):
     * Past: 2 persons x 3 numbers
 
     For example,
-    
+
         (be, being, been, [am are is are are are],
         [was were was were were were])
     """
-    def __init__(self, lemma, pres_part, past_part, present, past):
+
+    def __init__(self, lemma, pres_part, past_part, presents, pasts):
         self._lemma = lemma
         self._pres_part = pres_part
         self._past_part = past_part
-        self._present = present
-        self._past = past
+        self._presents = presents
+        self._pasts = pasts
 
     def lemma(self):
         return self._lemma
@@ -36,30 +37,83 @@ class ConjugationSpec(object):
         return self._past_part
 
     def present(self, number_and_person):
-        return self._present[number_and_person]
+        return self._presents[number_and_person]
 
     def past(self, number_and_person):
-        return self._past[number_and_person]
+        return self._pasts[number_and_person]
+
+
+class StringTransform(object):
+    """
+    Transformations to do on a string.
+    """
+
+    def __init__(self, append):
+        self.append = append
+
+    def transform(self, s):
+        return s + self.append
+
+
+class ConjugationSpecDerivation(object):
+    """
+    The information needed to derive a conjugation spec from a lemma.
+    """
+
+    def __init__(self, pres_part, past_part, presents, pasts):
+        self._pres_part = pres_part
+        self._past_part = past_part
+        self._presents = presents
+        self._pasts = pasts
+
+    def derive(self, lemma):
+        pres_part = self._pres_part.transform(lemma)
+        past_part = self._past_part.transform(lemma)
+        presents = map(lambda t: t.transform(lemma), self._presents)
+        pasts = map(lambda t: t.transform(lemma), self._pasts)
+        return ConjugationSpec(lemma, pres_part, past_part, presents, pasts)
 
 
 class Conjugator(object):
-    def __init__(self, lemma2irregular):
+    """
+    Conjugates verbs.
+    """
+
+    def __init__(self, lemma2irregular, regular_derivation):
         self._lemma2irregular = lemma2irregular
+        self._cache_lemma2regular = {}
+
+        self._regular_derivation = regular_derivation
 
     @staticmethod
     def init_default():
-        return Conjugator(conf.IRREGULAR_VERBS)
+        irregular_verbs = {
+            'be': ConjugationSpec(
+                'be', 'being', 'been', 'am are is are are are'.split(),
+                'was were was were were were'.split()),
+        }
+
+        t = lambda s: StringTransform(s)
+        regular_derivation = ConjugationSpecDerivation(
+            t('ing'), t('ed'), map(t, ['', '', 's', '', '', '']),
+            map(t, ['ed'] * 6))
+
+        return Conjugator(irregular_verbs, regular_derivation)
 
     def _conjugate_regular(self, s);
-        assert s.islower()
-        present = [s, s, s + 's', s, s, s]
-        past = map(lambda s: s + 'ed', [s] * 6)
-        return ConjugationSpec(
-            lemma, lemma + 'ing', lemma + 'ed', present, past)
+        return self._regular_derivation.derive(s)
 
     def conjugate(self, lemma):
-        spec = self._lemma2irregular.get(lemma)
-        if spec:
-            return spec
+        """
+        Lemma -> ConjugationSpec.
+        """
+        r = self._lemma2irregular.get(lemma)
+        if r:
+            return r
 
-        return _conjugate_regular(lemma)
+        r = self._cache_lemma2regular.get(lemma)
+        if r:
+            return r
+
+        assert lemma.islower()
+        return self._conjugate_regular(lemma)

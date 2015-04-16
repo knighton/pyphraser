@@ -1,3 +1,6 @@
+import re
+
+
 class TokenGrouper(object):
     """
     Munges tokens according to what token group they are in.
@@ -12,21 +15,29 @@ class TokenGrouper(object):
         self._names = []
         self._name2x = {}
 
+        self._name_re = re.compile('^[a-z ]+$')
+
     def add_token_group(self, display_name, instances):
         """
         Add a new token group to the list of tokens I will convert.
 
+        * If the name is already known, checks that 'instances' are the same.
         * Display name is a lowercase string with spaces.
         * Instances is a list of tokens.
         """
-        assert display_name not in self._name2x
+        x = self._name2x.get(display_name)
+        if x is not None:
+            assert sorted(instances) == self._token_groups[x]
+            return x
+
+        assert self._name_re.match(display_name)
         for token in instances:
             assert token not in self._token2x
             assert isinstance(token, basestring)
 
         x = len(self._token_groups)
 
-        self._token_groups.append(instances)
+        self._token_groups.append(sorted(instances))
         for token in instances:
             self._token2x[token] = x
 

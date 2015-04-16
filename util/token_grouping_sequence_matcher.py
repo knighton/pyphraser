@@ -31,7 +31,7 @@ class TokenGroupingSequenceMatcher(object):
             return
         munged_options_per_sequence = \
             self._munge_options_per_sequence(options_per_sequence_as_lines)
-        self.sequence_matcher.configure(munged_options_per_sequence)
+        self._sequence_matcher.configure(munged_options_per_sequence)
 
     def _tokenize_pretty_line(self, line):
         """

@@ -44,13 +44,13 @@ class SequenceMatcher(object):
         for token_lists in self._options_per_sequence:
             seen_ss = set()
             for token_list in token_lists:
-                ss = set(token_list)
+                ss = tuple(token_list)
                 assert ss not in seen_ss
                 seen_ss.add(ss)
             
         # Build an index of the first token of each sequence for performance.
-        self._seqx2token2optionxx.clear()
-        self._seqx2canbeempty.clear()
+        self._seqx2token2optionxx = []
+        self._seqx2canbeempty = []
         for i, token_lists in enumerate(self._options_per_sequence):
             can_be_empty = False
             token2optionxx = defaultdict(list)

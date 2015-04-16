@@ -76,7 +76,7 @@ class TokenGroupOracle(object):
 
     def _eval_regular_verb(self, lemma):
         ss = [lemma, lemma + 's']
-        self.verb2list[lemma] = ss
+        self._verb2list[lemma] = ss
         return ss
 
     def _eval_verb(self, lemma):

@@ -124,6 +124,14 @@ class TokenGroupingSequenceMatcher(object):
             rr.append(munged_options)
         return rr
 
+    def dump(self):
+        rr = []
+        rr.append('TokenGroupingSequenceMatcher {')
+        ss = self._token_grouper.dump()
+        rr += map(lambda s: '    ' + s, ss)
+        rr.append('}')
+        return rr
+
     def match(self, tokens, allow_overlapping):
         """
         tokens, whether overlapping -> yields (spans, sequence choice lists).

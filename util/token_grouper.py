@@ -1,5 +1,7 @@
 import re
 
+from util.io import lines_from_table
+
 
 class TokenGrouper(object):
     """
@@ -16,6 +18,34 @@ class TokenGrouper(object):
         self._name2x = {}
 
         self._name_re = re.compile('^[a-z ]+$')
+
+    def dump(self):
+        """
+        (Nothing) -> lines.
+
+        Dump my contents to a human-friendly string.
+        """
+        rr = []
+
+        rr.append('Token Grouper {')
+
+        rr.append('    Tokens across multiple groups = [')
+        rr.append('        (none)')
+        rr.append('    ]')
+
+        rr.append('    Token groups = [')
+        rows = []
+        headers = '# name tokens'.split()
+        for index, name in enumerate(self._names):
+            tokens = self._token_groups[index]
+            s = ' '.join(sorted(tokens))
+            row = [index, name, s]
+            rows.append(row)
+        rr += lines_from_table(rows, headers=headers, indent=' ' * 8)
+        rr.append('    ]')
+        rr.append('}')
+
+        return rr
 
     def add_token_group(self, display_name, instances):
         """

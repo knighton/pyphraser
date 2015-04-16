@@ -32,6 +32,9 @@ class ThreatMatcher(object):
         ]
         self._matcher.configure(options_per_sequence)
 
+        from util.io import print_func
+        map(print_func, self._matcher.dump())
+
         self._subject_categories = subject_categories
         self._aux_verb_categories = aux_verb_categories
 

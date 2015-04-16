@@ -1,6 +1,4 @@
-NumberAndPerson = enum(
-    'NumberAndPerson: SING_1ST SING_2ND SING_3RD PLUR_1ST PLUR_2ND PLUR_3RD',
-    start=0)
+from english.base import LinguisticNumber, LinguisticPerson
 
 
 class ConjugationSpec(object):
@@ -36,11 +34,18 @@ class ConjugationSpec(object):
     def past_part(self):
         return self._past_part
 
-    def present(self, number_and_person):
-        return self._presents[number_and_person]
+    def _make_index(self, person, number):
+        assert LinguisticPerson.is_valid(person)
+        assert LinguisticNumber.is_valid(number)
+        p = person - LinguisticPerson.first
+        n = number - Number.first
+        return n * len(LinguisticPerson.values) + p
 
-    def past(self, number_and_person):
-        return self._pasts[number_and_person]
+    def present(self, person, number):
+        return self._presents[self._make_index(person, number)]
+
+    def past(self, person, number):
+        return self._pasts[self._make_index(person, number)]
 
 
 class StringTransform(object):
@@ -100,7 +105,7 @@ class Conjugator(object):
 
         return Conjugator(irregular_verbs, regular_derivation)
 
-    def _conjugate_regular(self, s);
+    def _conjugate_regular(self, s):
         return self._regular_derivation.derive(s)
 
     def conjugate(self, lemma):

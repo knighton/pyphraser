@@ -1,8 +1,8 @@
-from sequence_matcher import SequenceMatcher
-import threat_config as cfg
-from threat_tokenizer import ThreatTokenizer
-from token_group_oracle import TokenGroupDictionary
-from token_grouper import TokenGrouper
+from threats import conf
+from threats.threat_tokenizer import ThreatTokenizer
+from util.sequence_matcher import SequenceMatcher
+from util.token_group_oracle import TokenGroupOracle
+from util.token_grouper import TokenGrouper
 
 
 class ThreatMatch(object):
@@ -17,7 +17,7 @@ class ThreatMatcher(object):
                  aux_verb_categories, adverbs, main_verbs):
         self._tokenizer = ThreatTokenizer()
 
-        token_group_oracle = TokenGroupDictionary()
+        token_group_oracle = TokenGroupOracle()
         token_grouper = TokenGrouper()
         sequence_matcher = SequenceMatcher()
         self._matcher = TokenGroupingSequenceMatcher(
@@ -37,8 +37,8 @@ class ThreatMatcher(object):
     @staticmethod
     def init_default():
         return ThreatMatcher(
-            cfg.SUBJECTS, cfg.SUBJECT_TYPES, cfg.AUX_VERBS, cfg.AUX_VERB_TYPES,
-            cfg.ADVERBS, cfg.MAIN_VERBS)
+            conf.SUBJECTS, conf.SUBJECT_TYPES, conf.AUX_VERBS,
+            conf.AUX_VERB_TYPES, conf.ADVERBS, conf.MAIN_VERBS)
 
     def match(self, text, allow_overlapping):
         """

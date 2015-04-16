@@ -1,3 +1,8 @@
+from util.token_group_oracle import TokenGroupOracle
+from util.token_grouper import TokenGrouper
+from util.sequence_matcher import SequenceMatcher
+
+
 class TokenGroupingSequenceMatcher(object):
     """
     Given a list of tokens, finds sequence matches, treating some groups of
@@ -6,11 +11,16 @@ class TokenGroupingSequenceMatcher(object):
     The sequences that comprise a match must be in order and contiguous.
     """
 
-    def  __init__(self, token_group_dictionary, token_grouper, sequence_matcher,
+    def  __init__(self, token_group_oracle, token_grouper, sequence_matcher,
                   options_per_sequence_as_lines=None):
-        self._token_group_dictionary = token_group_dictionary
+        self._token_group_oracle = token_group_oracle
         self._token_grouper = token_grouper
         self._sequence_matcher = sequence_matcher
+
+        assert isinstance(self._token_group_oracle, TokenGroupOracle)
+        assert isinstance(self._token_grouper, TokenGrouper)
+        assert isinstance(self._sequence_matcher, SequenceMatcher)
+
         self.configure(options_per_sequence_as_lines)
 
     def configure(self, options_per_sequence_as_lines)
@@ -90,7 +100,7 @@ class TokenGroupingSequenceMatcher(object):
             if is_token_group:
                 group_name = text
                 instances = \
-                    self._token_group_dictionary.get_token_group(group_name)
+                    self._token_group_oracle.get_token_group(group_name)
                 token_group_id = \
                     self.token_grouper.add_token_group(group_name, instances)
                 rr.append(token_group_id)

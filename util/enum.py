@@ -7,6 +7,7 @@ Usage:
 
     Color = enum('Color: RED GREEN BLUE')
 """
+
 import re
 
 

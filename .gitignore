@@ -1,4 +1,4 @@
-.pyc
-.swo
-.swp
+*.pyc
+*.swo
+*.swp
 data/

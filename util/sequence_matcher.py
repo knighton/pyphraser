@@ -76,7 +76,7 @@ class SequenceMatcher(object):
         cur_sequence_index = len(sequence_choices) - 1
         choice = sequence_choices[-1]
         expected_sequence = \
-            self._options_per_sequencet[cur_sequence_index][choice]
+            self._options_per_sequence[cur_sequence_index][choice]
 
         # Check each token in the sequence.
         for i in xrange(len(expected_sequence)):
@@ -91,7 +91,7 @@ class SequenceMatcher(object):
 
         # Ran out of sequences to match means the match was a success.
         next_sequence_index = cur_sequence_index + 1
-        if next_sequence_index == len(self._seq2token2optionxx):
+        if next_sequence_index == len(self._seqx2token2optionxx):
             yield sequence_choices
 
         # Else, if we're out of tokens, match was a failure.
@@ -149,6 +149,8 @@ class SequenceMatcher(object):
     def match(self, tokens, allow_overlapping):
         token_index = 0
         spans = []
+        sequence_choice_lists = []
         for span, sequence_choices in self._find_all_matches_from(
-                tokens, token_index, allow_overlapping, spans):
+                tokens, token_index, allow_overlapping, spans,
+                sequence_choice_lists):
             yield span, sequence_choices

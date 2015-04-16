@@ -47,7 +47,7 @@ class ThreatMatcher(object):
         """
         ss = self._tokenizer.tokenize(text)
         for spans, sequence_choice_lists in \
-                self._matcher.match(aa, allow_overlapping):
+                self._matcher.match(ss, allow_overlapping):
             matches = []
             for span, choices in zip(spans, sequence_choice_lists):
                 subject_x, aux_verb_x = choices[:2]

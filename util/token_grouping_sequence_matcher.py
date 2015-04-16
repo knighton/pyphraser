@@ -131,6 +131,6 @@ class TokenGroupingSequenceMatcher(object):
         Munge their tokens and compare them against my tokens.
         """
         munged_tokens = self._token_grouper.encode(tokens)
-        for spans, sequence_choice_lists in self._sequence_matcher.get_matches(
+        for spans, sequence_choice_lists in self._sequence_matcher.match(
                 munged_tokens, allow_overlapping):
             yield spans, sequence_choice_lists

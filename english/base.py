@@ -1,7 +1,10 @@
 from util.enum import enum
 
 
-LingNumber = enum('LingNumber: SINGULAR PLURAL')
+LingNumber = enum('LingNumber: SING PLUR')
 
 
-LingPerson = enum('LingPerson: FIRST SECOND THIRD')
+LingPerson = enum('LingPerson: FIRST SECOND THIRD INTR')
+
+
+LingGender = enum('LingGender: MALE FEMALE NEUTER')

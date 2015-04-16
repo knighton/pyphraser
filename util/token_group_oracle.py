@@ -45,7 +45,7 @@ class TokenGroupOracle(object):
         """.split()
 
         self._verb2list = {
-            'to be': to_be,
+            'be': to_be,
         }
 
         self._key2list = {
@@ -60,8 +60,10 @@ class TokenGroupOracle(object):
 
     def _check(self):
         for key in self._verb2list:
-            assert key.startswith('to ')
+            assert key
+            assert isinstance(key, str)
         for key in self._key2list:
+            assert key
             assert not key.startswith('to ')
 
         seen = set()

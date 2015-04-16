@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from english.base import LingGender, LingNumber, LingPerson
 from util.enum import enum
 from util.table import Table
@@ -49,25 +51,43 @@ PersonalsRow = enum(
 # personals table row -> (number, person, maybe gender).
 N = LingNumber
 P = LingPerson
+PH = LingPersonhood
 G = LingGender
 PERROW2INFO = {
-    PersonalsRow.I:        (N.SING, P.FIRST,  None),
-    PersonalsRow.YOU1:     (N.SING, P.SECOND, None),
-    PersonalsRow.THOU:     (N.SING, P.SECOND, None),
-    PersonalsRow.HE:       (N.SING, P.THIRD,  G.MALE),
-    PersonalsRow.SHE:      (N.SING, P.THIRD,  G.FEMALE),
-    PersonalsRow.IT:       (N.SING, P.THIRD,  G.NEUTER),
-    PersonalsRow.THEY1:    (N.SING, P.THIRD,  None),
-    PersonalsRow.ONE:      (N.SING, P.THIRD,  None),
-    PersonalsRow.WHO1:     (N.SING, P.INTR,   None),
-    PersonalsRow.WHOEVER1: (N.SING, P.INTR,   None),
-    PersonalsRow.WE:       (N.PLUR, P.FIRST,  None),
-    PersonalsRow.YOU2:     (N.PLUR, P.SECOND, None),
-    PersonalsRow.YALL:     (N.PLUR, P.SECOND, None),
-    PersonalsRow.THEY2:    (N.PLUR, P.THIRD,  None),
-    PersonalsRow.WHO2:     (N.PLUR, P.INTR,   None),
-    PersonalsRow.WHOEVER2: (N.PLUR, P.INTR,   None),
+    PersonalsRow.I:        (N.SING, P.FIRST,     None,   None),
+    PersonalsRow.YOU1:     (N.SING, P.SECOND,    None,   None),
+    PersonalsRow.THOU:     (N.SING, P.SECOND,    None,   None),
+    PersonalsRow.HE:       (N.SING, P.THIRD,     PH.YES, G.MALE),
+    PersonalsRow.SHE:      (N.SING, P.THIRD,     PH.YES, G.FEMALE),
+    PersonalsRow.IT:       (N.SING, P.THIRD,     PH.NO,  G.NEUTER),
+    PersonalsRow.THEY1:    (N.SING, P.THIRD,     PH.YES, None),
+    PersonalsRow.ONE:      (N.SING, P.THIRD,     None,   None),
+    PersonalsRow.WHO1:     (N.SING, P.INTR,      PH.YES, None),
+    PersonalsRow.WHOEVER1: (N.SING, P.INTR_EMPH, PH.YES, None),
+    PersonalsRow.WE:       (N.PLUR, P.FIRST,     None,   None),
+    PersonalsRow.YOU2:     (N.PLUR, P.SECOND,    None,   None),
+    PersonalsRow.YALL:     (N.PLUR, P.SECOND,    None,   None),
+    PersonalsRow.THEY2:    (N.PLUR, P.THIRD,     None,   None),
+    PersonalsRow.WHO2:     (N.PLUR, P.INTR,      PH.YES, None),
+    PersonalsRow.WHOEVER2: (N.PLUR, P.INTR_EMPH, PH.YES, None),
 }
+
+
+class Idiolect(object):
+    """
+    How to choose when the choice is arbitrary.
+    """
+
+    def __init__(self, you_or_thou, you_or_yall):
+        self.you_or_thou = you_or_thou
+        self.you_or_yall = you_or_yall
+
+        assert self.you_or_thou in (PersonalsRow.YOU1, PersonalsRow.THOU)
+        assert self.you_or_yall in (PersonalsRow.YOU2, PersonalsRow.YALL)
+
+    @staticmethod
+    def init_default():
+        return Idiolect(PersonalsRow.YOU1, PersonalsRow.YOU2)
 
 
 def make_pronouns_table(text):
@@ -117,7 +137,9 @@ def make_pronoun_aliases(text):
     return d
 
 
-# Canonical form -> form to also recognize as that.
+# Text: list of (canonical form, form to also recognize as that).
+#
+# Mapping: other form -> canonical form.
 other2canonical = make_pronoun_aliases("""
     himself      hisself
 
@@ -132,3 +154,37 @@ other2canonical = make_pronoun_aliases("""
     whomever     whoever
     whomever's   whoever's
 """)
+
+
+def flip_dict(k2v):
+    d = defaultdict(list)
+    for k, v in k2v.iteritems():
+        d[v].append(k)
+    return d
+
+
+class PersonalsManager(object):
+    def __init__(self, personals_table, other2canonical, idiolect):
+        self._personals_table = personals_table
+        self._other2canonical = other2canonical
+        self._idiolect = idiolect
+
+        self._canonical2other = flip_dict(self._other2canonical)
+
+        assert set(self._personals_table.rows()) == PersonalsRow.values
+        assert set(self._personals_table.columns()) == PersonalsColumn.values
+
+    def get_personal_pronoun(self, number, person, personhood, gender):
+        """
+        (number, person, personhood, gender) -> word or None.
+
+        Notes:
+        * It will assert if you use 'personhood = no' for an interrogative form.
+          Use 'what' instead, not 'who'.
+        * Otherwise, personhood usually doesn't matter.
+        * Gender only changes the output if third person singular.
+        """
+        pass
+
+    def each(self):
+        pass

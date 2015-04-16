@@ -35,13 +35,13 @@ class TokenGrouper(object):
 
         rr.append('    Token groups = [')
         rows = []
-        headers = '# name tokens'.split()
+        column_names = '# name tokens'.split()
         for index, name in enumerate(self._names):
             tokens = self._token_groups[index]
             s = ' '.join(sorted(tokens))
             row = [index, name, s]
             rows.append(row)
-        rr += lines_from_table(rows, headers=headers, indent=' ' * 8)
+        rr += lines_from_table(rows, column_names=column_names, indent=' ' * 8)
         rr.append('    ]')
         rr.append('}')
 

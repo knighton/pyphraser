@@ -1,9 +1,14 @@
-def lines_from_table(rows, headers=None, indent='', space_between_columns=' '):
-    if headers is not None:
-        rows = [headers] + rows
+def lines_from_table(
+        rows, column_names=None, indent='', space_between_columns=' '):
+    if column_names is not None:
+        dashes = []
+        for column_name in column_names:
+            s = str(column_name)
+            dashes.append('-' * len(s))
+        rows = [column_names, dashes] + rows
     
     if not rows:
-        return ''
+        return []
 
     sss = []
     max_lens = map(len, rows[0])

@@ -23,10 +23,12 @@ class TokenGroupingSequenceMatcher(object):
 
         self.configure(options_per_sequence_as_lines)
 
-    def configure(self, options_per_sequence_as_lines)
+    def configure(self, options_per_sequence_as_lines=None):
         """
         Set the phrases to match.
         """
+        if options_per_sequence_as_lines is None:
+            return
         munged_options_per_sequence = \
             self._munge_options_per_sequence(options_per_sequence_as_lines)
         self.sequence_matcher.configure(munged_options_per_sequence)
@@ -96,13 +98,13 @@ class TokenGroupingSequenceMatcher(object):
             [0, 1, 'will', 'kill', 'you']
         """
         rr = []
-        for text, is_token_group in self._tokenize_pretty_subsequence(line):
+        for text, is_token_group in self._tokenize_pretty_line(line):
             if is_token_group:
                 group_name = text
                 instances = \
                     self._token_group_oracle.get_token_group(group_name)
                 token_group_id = \
-                    self.token_grouper.add_token_group(group_name, instances)
+                    self._token_grouper.add_token_group(group_name, instances)
                 rr.append(token_group_id)
             else:
                 token = text

@@ -3,6 +3,7 @@ from threats.threat_tokenizer import ThreatTokenizer
 from util.sequence_matcher import SequenceMatcher
 from util.token_group_oracle import TokenGroupOracle
 from util.token_grouper import TokenGrouper
+from util.token_grouping_sequence_matcher import TokenGroupingSequenceMatcher
 
 
 class ThreatMatch(object):
@@ -29,7 +30,7 @@ class ThreatMatcher(object):
             adverbs,
             main_verbs,
         ]
-        self.matcher.configure(options_per_sequence)
+        self._matcher.configure(options_per_sequence)
 
         self._subject_categories = subject_categories
         self._aux_verb_categories = aux_verb_categories

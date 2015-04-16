@@ -37,21 +37,23 @@ def annotated_lines(enum, s):
     return patterns, annotation
 
 
-RoughSubject = enum('SubjectType: I_OR_WE RELIGIOUS')
+SubjectCategory = enum('SubjectCategory: I_OR_WE SOMEONE_ELSE RELIGIOUS')
 
 
-SUBJECTS, SUBJECT_TYPES = annotated_lines(RoughSubject, """
+SUBJECTS, SUBJECT_CATS = annotated_lines(SubjectCategory, """
     (first person subject) -- i_or_we
+    (third person subject) -- someone_else
     god -- religious
     satan -- religious
     allah -- religious
 """)
 
 
-Actuality = enum('Actuality: FUTURE DESIRE CONDITIONAL HYPOTHETICAL')
+AuxVerbCategory = enum(
+    'AuxVerbCategory: FUTURE DESIRE CONDITIONAL HYPOTHETICAL')
 
 
-AUX_VERBS, AUX_VERB_TYPES = annotated_lines(Actuality, """
+AUX_VERBS, AUX_VERB_CATS = annotated_lines(AuxVerbCategory, """
     (to be) going to -- future
     (to be) planning to -- future
     (to plan) to -- future

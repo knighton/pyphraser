@@ -89,15 +89,18 @@ ADVERBS = lines("""
 MAIN_VERBS = lines("""
     abduct
     choke
-    kick (nonfirst possessive pronoun)
+    kick (nonher nonfirst possessive pronoun)
+    kick her
     kill
-    make (nonfirst person object) a martyr
+    make (nonher nonfirst person object) a martyr
+    make her a martyr
     make an example of
     punch
     rape
     steal
     sucker punch
-    rip (nonfirst possessive pronoun)
+    rip (nonher nonfirst possessive pronoun)
+    rip her
     slap
     smack
     threaten

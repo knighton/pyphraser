@@ -15,20 +15,20 @@ class TokenGroupOracle(object):
             we
         """.split()
 
-        nonfirst_person_objects = """
+        # No "her" because it would be shared across token groups.
+        nonher_nonfirst_person_objects = """
             u
             you
             him
-            her
             it
             them
             yall
         """.split()
 
-        nonfirst_possessive_pronouns = """
+        # No "her" because it would be shared across token groups.
+        nonher_nonfirst_possessive_pronouns = """
             your
             his
-            her
             its
             it's
             yall's
@@ -36,13 +36,14 @@ class TokenGroupOracle(object):
         """.split()
 
         self._verb2list = {
-            'be': to_be,
+            'to be': to_be,
         }
 
         self._key2list = {
             'first person subject': first_person_subjects,
-            'nonfirst person object': nonfirst_person_objects,
-            'nonfirst possessive pronoun': nonfirst_possessive_pronouns,
+            'nonher nonfirst person object': nonher_nonfirst_person_objects,
+            'nonher nonfirst possessive pronoun':
+                nonher_nonfirst_possessive_pronouns,
         }
 
         self._check()
@@ -54,12 +55,14 @@ class TokenGroupOracle(object):
             assert not key.startswith('to ')
 
         seen = set()
-        for s in self._verb2list.itervalues():
-            assert s not in seen
-            seen.add(s)
-        for s in self._key2list.itervalues():
-            assert s not in seen
-            seen.add(s)
+        for ss in self._verb2list.itervalues():
+            for s in ss:
+                assert s not in seen
+                seen.add(s)
+        for ss in self._key2list.itervalues():
+            for s in ss:
+                assert s not in seen
+                seen.add(s)
 
     def _eval_regular_verb(self, lemma):
         ss = [lemma, lemma + 's']

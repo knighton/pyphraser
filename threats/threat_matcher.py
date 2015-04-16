@@ -37,8 +37,8 @@ class ThreatMatcher(object):
     @staticmethod
     def init_default():
         return ThreatMatcher(
-            conf.SUBJECTS, conf.SUBJECT_TYPES, conf.AUX_VERBS,
-            conf.AUX_VERB_TYPES, conf.ADVERBS, conf.MAIN_VERBS)
+            conf.SUBJECTS, conf.SUBJECT_CATS, conf.AUX_VERBS,
+            conf.AUX_VERB_CATS, conf.ADVERBS, conf.MAIN_VERBS)
 
     def match(self, text, allow_overlapping):
         """

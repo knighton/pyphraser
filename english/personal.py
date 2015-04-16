@@ -298,4 +298,3 @@ class PersonalsManager(object):
         word list of (PersonalPronounInfo or PersonalDeterminerInfo)
         """
         return self.decode_pronoun() + self.decode_determiner()
-

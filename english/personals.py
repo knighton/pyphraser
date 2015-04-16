@@ -1,6 +1,7 @@
 from collections import defaultdict
 
 from english.base import LingGender, LingNumber, LingPerson
+from util.collections import v2kk_from_k2v
 from util.enum import enum
 from util.table import Table
 
@@ -40,6 +41,9 @@ PRONOUN_PERCOL2INFO = {
 }
 
 
+PRONOUN_INFO2PERCOL = v2k_from_k2v(PRONOUN_PERCOL2INFO)
+
+
 # A row of the personal pronouns and determiners table.
 PersonalsRow = enum(
     'PersonalsRow: I YOU1 THOU HE SHE IT THEY1 ONE WHO1 WHOEVER1 WE YOU2 YALL '
@@ -73,21 +77,32 @@ PERROW2INFO = {
 }
 
 
+INFO2PERROW = v2k_from_k2v(PERRROW2INFO)
+
+
 class Idiolect(object):
     """
     How to choose when the choice is arbitrary.
     """
 
-    def __init__(self, you_or_thou, you_or_yall):
-        self.you_or_thou = you_or_thou
-        self.you_or_yall = you_or_yall
+    YOU1_OPTIONS = tuple(sorted([PersonalsRow.YOU1, PersonalsRow.THOU]))
+    YOU2_OPTIONS = tuple(sorted([PersonalsRow.YOU2, PersonalsRow.YALL]))
 
-        assert self.you_or_thou in (PersonalsRow.YOU1, PersonalsRow.THOU)
-        assert self.you_or_yall in (PersonalsRow.YOU2, PersonalsRow.YALL)
+    def __init__(self, you_or_thou, you_or_yall):
+        assert you_or_thou in YOU1_OPTIONS
+        assert you_or_yall in YOU2_OPTIONS
+
+        self._options2choice = {
+            YOU1_OPTIONS: you_or_thou,
+            YOU2_OPTIONS: you_or_yall,
+        }
 
     @staticmethod
     def init_default():
         return Idiolect(PersonalsRow.YOU1, PersonalsRow.YOU2)
+
+    def choose(self, options_tuple):
+        return self._options2choice[options_tuple]
 
 
 def make_pronouns_table(text):
@@ -131,7 +146,7 @@ personals_table = make_pronouns_table("""
 
 def make_pronoun_aliases(text):
     d = {}
-    for line in text.strip().split('\n'):
+    for line in text.strip().split('\n')[2:]:
         canonical, other = line.split()
         d[other] = canonical
     return d
@@ -141,6 +156,9 @@ def make_pronoun_aliases(text):
 #
 # Mapping: other form -> canonical form.
 other2canonical = make_pronoun_aliases("""
+    canonical    other
+    ---------    -----
+
     himself      hisself
 
     y'all        yall
@@ -156,27 +174,39 @@ other2canonical = make_pronoun_aliases("""
 """)
 
 
-def flip_dict(k2v):
-    d = defaultdict(list)
-    for k, v in k2v.iteritems():
-        d[v].append(k)
-    return d
-
-
 class PersonalsManager(object):
     def __init__(self, personals_table, other2canonical, idiolect):
         self._personals_table = personals_table
         self._other2canonical = other2canonical
         self._idiolect = idiolect
 
-        self._canonical2other = flip_dict(self._other2canonical)
+        self._canonical2other = k2v_to_v2kk(self._other2canonical)
 
         assert set(self._personals_table.rows()) == PersonalsRow.values
         assert set(self._personals_table.columns()) == PersonalsColumn.values
 
-    def get_personal_pronoun(self, number, person, personhood, gender):
+    def _row_tuples_to_try(self, number, person, personhood, gender):
+        yield (number, person, personhood, gender)
+        yield (number, person, personhood, None)
+        yield (number, person, None, None)
+
+    def _decide_row_name(self, number, person, personhood, gender):
+        for key in self._row_tuples_to_try(number, person, personhood, gender):
+            row_names = INFO2PERROW.get(key)
+            if row_names:
+                if len(options) == 1:
+                    return row_names[0]
+
+                return self._idiolect.choose(tuple(sorted(row_names)))
+
+        assert False
+
+    def _decide_column_name(self, case, poss):
+        return PRONOUN_INFO2PERCOL[(case, poss)]
+
+    def get_personal_pronoun(self, case, poss, number, person, personhood, gender):
         """
-        (number, person, personhood, gender) -> word or None.
+        (case, poss, number, person, personhood, gender) -> word or None.
 
         Notes:
         * It will assert if you use 'personhood = no' for an interrogative form.
@@ -184,7 +214,6 @@ class PersonalsManager(object):
         * Otherwise, personhood usually doesn't matter.
         * Gender only changes the output if third person singular.
         """
-        pass
-
-    def each(self):
-        pass
+        row = self._decide_row_name(number, person, personhood, gender)
+        column = self._decide_column_name(case, poss)
+        return self._personals_table.get(row, column)

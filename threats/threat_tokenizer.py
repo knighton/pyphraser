@@ -13,7 +13,7 @@ class ThreatTokenizer(object):
         """
         Text -> tokens.
         """
-        ss = text.split().lower()
+        ss = text.lower().split()
         rr = []
         for s in ss:
             last_two = s[-2:]

@@ -19,8 +19,8 @@ class ThreatTokenizer(object):
             last_two = s[-2:]
             split_out = self.expand.get(last_two)
             if split_out is None:
+                rr.append(s)
+            else:
                 rr.append(s[:-2])
                 rr.append(split_out)
-            else:
-                rr.append(s)
         return rr

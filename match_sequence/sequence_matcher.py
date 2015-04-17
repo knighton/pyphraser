@@ -62,7 +62,9 @@ class SequenceMatcher(object):
             value2optionxx = {}
             for j, option in enumerate(block):
                 if option:
-                    value2optionxx[value].append(j)
+                    first_item = option[0]
+                    for value in self._values_from_item(first_item):
+                        value2optionxx[value].append(j)
                 else:
                     can_be_empty = True
             self._canbeempty_per_block.append(can_be_empty)

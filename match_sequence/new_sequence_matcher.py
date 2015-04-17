@@ -1,7 +1,3 @@
-
-
-
-
 class Match(object):
     def __init__(self, span, option_choices):
         self.span = span
@@ -93,11 +89,35 @@ class SequenceMatcher(object):
                     items, begin_token_index, new_option_choices):
                 yield match
 
-    def _each_match_at_or_after(self, items, item_index):
+    def _each_match_that_starts_at(self, items, item_index):
+        """
+        (items, item index) -> yields Match
+        """
+        first_block = 0
+        item = items[item_index]
+        for option_index in self._get_possible_options(self, first_block, item):
+            option_choices = [option_index]
+            for match in self._each_match_that_starts_at_inner(
+                    items, item_index, option_choices):
+                yield match
+
+    def _each_match_list_that_starts_at(self, items, item_index):
+        """
+        (items, item index) -> yields list of Match ordered by location
+        """
         while item_index < len(items):
-            item = items[item_index]
-            XXX
-        XXX
+            for match in self._each_match_that_starts_at(items, item_index):
+                resume_item_index = match.span[-1]
+                for matches in self._each_match_list_that_starts_at(
+                        items, resume_item_index):
+                    yield [match] + matches
+            item_index += 1
+
+    def each_match_list(self, items):
+        item_index = 0
+        for match_list in self._each_match_list_that_starts_at(
+                items, item_index):
+            yield match_list
 
 
 class TokenSequenceMatcher(SequenceMatcher):

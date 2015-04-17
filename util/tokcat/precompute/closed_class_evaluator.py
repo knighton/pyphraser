@@ -16,6 +16,10 @@ class ClosedClassEvaluator(object):
 
     def get_token_group(self, expr):
         """
-        Expression -> list of strings
+        Expression -> None or list of strings
         """
-        return self._key2handler[expr.key].get_token_group(expr)
+        handler = self._key2handler.get(expr.key())
+        if not handler:
+            return None
+
+        return handler.get_token_group(expr)

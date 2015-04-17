@@ -2,7 +2,7 @@ from base.combinatorics import each_choose_one_from_each_list
 from english.base import LingNumber, LingPerson, Tense
 
 
-VerbUsage = enum('VerbUsage: LEMMA PRES_PART PAST_PART CONJUGATED')
+VerbUsage = enum('VerbUsage: LEMMA PRES_PART PAST_PART FINITE')
 
 
 class VerbInfo(object):
@@ -22,6 +22,12 @@ class VerbInfo(object):
         self.person = person
         self.tense = tense
         self.usage = usage
+
+    def matches_filters(self, dimension2filters):
+        for dim, filters in dimension2filters.iteritems():
+            if getattr(self, dim) in filters:
+                return False
+        return True
 
 
 class ConjugationSpec(object):
@@ -83,12 +89,12 @@ class ConjugationSpec(object):
         for i, s in enumerate(self._presents):
             number = numbers[i / 3]
             person = persons[i % 3]
-            yield s, number, person, Tense.PRES, Usage.CONJUGATED
+            yield s, number, person, Tense.PRES, Usage.FINITE
 
         for i, s in enumerate(self._pasts):
             number = numbers[i / 3]
             person = persons[i % 3]
-            yield s, number, person, Tense.PAST, Usage.CONJUGATED
+            yield s, number, person, Tense.PAST, Usage.FINITE
 
     def each_field(self):
         for aa in self._each_field_with_nones():

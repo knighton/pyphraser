@@ -195,6 +195,16 @@ class PersonalPronounInfo(object):
         self.personhood = personhood
         self.gender = gender
 
+    def to_d(self):
+        return {
+            'case': self.case,
+            'poss': self.poss,
+            'number': self.number,
+            'person': self.person,
+            'personhood': self.personhood,
+            'gender': self.gender,
+        }
+
 
 class PersonalDeterminerInfo(object):
     def __init__(self, number, person, personhood, gender):
@@ -203,36 +213,51 @@ class PersonalDeterminerInfo(object):
         self.personhood = personhood
         self.gender = gender
 
+    def to_d(self):
+        return {
+            'number': self.number,
+            'person': self.person,
+            'personhood': self.personhood,
+            'gender': self.gender,
+        }
+
 
 class PersonalsManager(object):
     def __init__(self, personals_table, other2canonical, idiolect):
-        self._personals_table = personals_table
-        self._other2canonical = other2canonical
         self._idiolect = idiolect
 
-        self._canonical2other = k2v_to_v2kk(self._other2canonical)
+        canonical2others = k2v_to_v2kk(other2canonical)
 
-        assert set(self._personals_table.rows()) == PersonalsRow.values
-        assert set(self._personals_table.columns()) == PersonalsColumn.values
+        assert set(personals_table.rows()) == PersonalsRow.values
+        assert set(personals_table.columns()) == PersonalsColumn.values
 
+        self._rowcolumn2ss = defaultdict(list)
         self._pronoun_s2infos = defaultdict(list)
         self._determiner_s2infos = defaultdict(list)
-        for row, column, s_or_none in self._personals_table.each():
+        for row, column, s_or_none in personals_table.each():
             if s_or_none is None:
                 continue
+
             s = s_or_none
-            if column == PersonalsColumn.POS_DET:
-                number, person, personhood, gender = PERROW2INFO[row]
-                info = PersonalDeterminerInfo(
-                    number, person, personhood, gender)
-                d = self._determiner_s2infos
-            else:
-                case, poss = PRONOUN_PERCOL2INFO[column]
-                number, person, personhood, gender = PERROW2INFO[row]
-                info = PersonalPronounInfo(
-                    case, poss, number, person, personhood, gender)
-                d = self._pronoun_s2infos
-            d[s].append(info)
+            self._note_token(row, column, s)
+
+            for s in canonical2others.get(s, []):
+                self._note_token(row, column, s)
+
+    def _note_token(self, row, column, s):
+        self._rowcolumn2ss[(row, column)].append(s)
+        if column == PersonalsColumn.POS_DET:
+            number, person, personhood, gender = PERROW2INFO[row]
+            info = PersonalDeterminerInfo(
+                number, person, personhood, gender)
+            d = self._determiner_s2infos
+        else:
+            case, poss = PRONOUN_PERCOL2INFO[column]
+            number, person, personhood, gender = PERROW2INFO[row]
+            info = PersonalPronounInfo(
+                case, poss, number, person, personhood, gender)
+            d = self._pronoun_s2infos
+        d[s].append(info)
 
     def _decide_row_name(self, number, person, personhood, gender):
         """
@@ -265,21 +290,21 @@ class PersonalsManager(object):
 
     def encode_pronoun(self, ppi):
         """
-        (case, poss, number, person, personhood, gender) -> word or None
+        (case, poss, number, person, personhood, gender) -> list of options
         """
         row = self._decide_row_name(
             ppi.number, ppi.person, ppi.personhood, ppi.gender)
         column = self._decide_column_name(case, poss)
-        return self._personals_table.get(row, column)
+        return self._rowcolumn2ss[(row, column)]
 
     def encode_determiner(self, pdi):
         """
-        (number, person, personhood, gender) -> word or None
+        (number, person, personhood, gender) -> list of options
         """
         row = self._decide_row_name(
             pdi.number, pdi.person, pdi.personhood, pdi.gender)
         column = PersonalsColumn.POS_DET
-        return self._personals_table.get(row, column)
+        return self._rowcolumn2ss[(row, column)]
 
     def decode_pronoun(self, s):
         """
@@ -298,3 +323,19 @@ class PersonalsManager(object):
         word list of (PersonalPronounInfo or PersonalDeterminerInfo)
         """
         return self.decode_pronoun() + self.decode_determiner()
+
+    def each_pronoun_with_attrs(self):
+        """
+        yields (word, PersonalPronounInfo)
+        """
+        for s, infos in self._pronoun_s2infos.iteritems():
+            for info in infos:
+                yield s, info
+
+    def each_determiner_with_attrs(self):
+        """
+        yields (word, PersonalDeterminerInfo)
+        """
+        for s, infos in self._determiner_s2infos.iteritems():
+            for info in infos:
+                yield s, info

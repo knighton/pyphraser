@@ -5,7 +5,7 @@ class TokenGenExpression(object):
     """
     Configuration for generating token groups.
 
-    Passed from TokenGroupOracle to one of its handlers for processing.
+    Passed from TokenGroupOracle to one of its evaluators for processing.
 
     Expressions are
     * a keyword, that is the first token (verb, personal pronoun, etc.)

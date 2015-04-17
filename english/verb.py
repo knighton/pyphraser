@@ -23,11 +23,13 @@ class VerbInfo(object):
         self.tense = tense
         self.usage = usage
 
-    def matches_filters(self, dimension2filters):
-        for dim, filters in dimension2filters.iteritems():
-            if getattr(self, dim) in filters:
-                return False
-        return True
+    def to_d(self):
+        return {
+            'number': self.number,
+            'person': self.person,
+            'tense':  self.tense,
+            'usage':  self.usage,
+        }
 
 
 class ConjugationSpec(object):
@@ -76,7 +78,7 @@ class ConjugationSpec(object):
     def past(self, person, number):
         return self._pasts[self._make_index(person, number)]
 
-    def _each_field_with_nones(self):
+    def _each_field_with_noneable_attrs(self):
         """
         (nothing) -> yields (word, number, person, tense, usage).
         """
@@ -96,8 +98,8 @@ class ConjugationSpec(object):
             person = persons[i % 3]
             yield s, number, person, Tense.PAST, Usage.FINITE
 
-    def each_field(self):
-        for aa in self._each_field_with_nones():
+    def each_field_with_attrs(self):
+        for aa in self._each_field_with_noneable_attrs():
             word = aa[0]
 
             options_per_field = []

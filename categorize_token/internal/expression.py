@@ -27,15 +27,32 @@ class Expression(object):
     @staticmethod
     def init_from_string(text):
         ss = text.split()
+
         key = ss[0]
+
         args = []
-        filters = []
-        for s in ss[1:]:
+        i = 1
+        while i < len(ss):
+            s = ss[i]
             if s.startswith('+'):
-                s = s[1:]
-                assert ARG_RE.match(s)
-                filters.append(s)
-            else:
-                assert ARG_RE.match(s)
-                args.append(s)
+                break
+            assert ARG_RE.match(s)
+            args.append(s)
+
+        filters = []
+        while i < len(ss):
+            s = ss[i]
+            assert s.startswith('+')
+            s = s[1:]
+            assert ARG_RE.match(s)
+            filters.append(s)
+
         return Expression(key, args, filters)
+
+    def to_s(self):
+        ss = [self.key]
+        for arg in self.args:
+            ss.append(arg)
+        for flag in self.filters:
+            ss.append('+' + flag)
+        return ' '.join(ss)

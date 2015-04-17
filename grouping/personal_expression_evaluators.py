@@ -43,6 +43,7 @@ class PersonalPronounExpressionEvaluator(ExpressionEvaluator):
     def __init__(self, personals_mgr):
         self._personals_mgr = personals_mgr
         self._filters = PERS_PRO_FILTERS
+        super(PersonalPronounExpressionEvaluator, self).__init__()
 
     def get_filters(self):
         return self._filters
@@ -53,10 +54,11 @@ class PersonalPronounExpressionEvaluator(ExpressionEvaluator):
             yield token, ppi.to_d()
 
 
-class PersonalDeterminerExpressionEvaluator(ExpressionEvaluator):
+class PossessiveDeterminerExpressionEvaluator(ExpressionEvaluator):
     def __init__(self, personals_mgr):
         self._personals_mgr = personals_mgr
         self._filters = POS_DET_FILTERS
+        super(PossessiveDeterminerExpressionEvaluator, self).__init__()
 
     def get_filters(self):
         return self._filters
@@ -65,5 +67,4 @@ class PersonalDeterminerExpressionEvaluator(ExpressionEvaluator):
         assert not args
         for token, pdi in self._personals_mgr.each_determiner_with_attrs():
             yield token, pdi.to_d()
-
 

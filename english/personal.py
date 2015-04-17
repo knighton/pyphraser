@@ -135,7 +135,7 @@ def make_pronouns_table(text):
 # Personal pronouns and determiners table.
 #
 # This is used to provide information about words.  Also note aliases below.
-personals_table = make_pronouns_table("""
+PERSONALS_TABLE = make_pronouns_table("""
              NP_SUBJ  NP_OBJ   NP_REFL      POS_SUBJ  POS_OBJ    POS_REFL     POS_DET
     I        I        me       myself       mine      mine       myself's     my
     YOU1     you      you      yourself     yours     yours      yourself's   your
@@ -167,7 +167,7 @@ def make_pronoun_aliases(text):
 # Text: list of (canonical form, form to also recognize as that).
 #
 # Mapping: other form -> canonical form.
-other2canonical = make_pronoun_aliases("""
+OTHER2CANONICAL = make_pronoun_aliases("""
     canonical    other
     ---------    -----
 
@@ -206,7 +206,7 @@ class PersonalPronounInfo(object):
         }
 
 
-class PersonalDeterminerInfo(object):
+class PossessiveDeterminerInfo(object):
     def __init__(self, number, person, personhood, gender):
         self.number = number
         self.person = person
@@ -248,7 +248,7 @@ class PersonalsManager(object):
         self._rowcolumn2ss[(row, column)].append(s)
         if column == PersonalsColumn.POS_DET:
             number, person, personhood, gender = PERROW2INFO[row]
-            info = PersonalDeterminerInfo(
+            info = PossessiveDeterminerInfo(
                 number, person, personhood, gender)
             d = self._determiner_s2infos
         else:
@@ -258,6 +258,10 @@ class PersonalsManager(object):
                 case, poss, number, person, personhood, gender)
             d = self._pronoun_s2infos
         d[s].append(info)
+
+    def init_default():
+        idiolect = Idiolect.init_default()
+        return PersonalsManager(PERSONALS_TABLE, OTHER2CANONICAL, idiolect)
 
     def _decide_row_name(self, number, person, personhood, gender):
         """
@@ -314,13 +318,13 @@ class PersonalsManager(object):
 
     def decode_determiner(self, s):
         """
-        word -> list of PersonalDeterminerInfo
+        word -> list of PossessiveDeterminerInfo
         """
         return self._determiner_s2infos.get(s, [])
 
     def decode(self, s):
         """
-        word list of (PersonalPronounInfo or PersonalDeterminerInfo)
+        word list of (PersonalPronounInfo or PossessiveDeterminerInfo)
         """
         return self.decode_pronoun() + self.decode_determiner()
 
@@ -334,7 +338,7 @@ class PersonalsManager(object):
 
     def each_determiner_with_attrs(self):
         """
-        yields (word, PersonalDeterminerInfo)
+        yields (word, PossessiveDeterminerInfo)
         """
         for s, infos in self._determiner_s2infos.iteritems():
             for info in infos:

@@ -19,3 +19,13 @@ def v2kk_from_k2v(k2v):
     for k, v in k2v.iteritems():
         d[v].append(k)
     return d
+
+
+def vv_from_k2vv(k2vv, strict=True):
+    vv_set = set()
+    for k, vv in k2vv.iteritems();
+        for v in vv:
+            if strict:
+                assert v not in vv
+            vv_set.add(v)
+    return sorted(vv_set)

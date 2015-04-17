@@ -1,20 +1,23 @@
 def lines_from_table(
-        rows, column_names=None, indent='', space_between_columns=' '):
+        aaa, column_names=None, indent='', space_between_columns=' '):
+    """
+    list of list of stringable -> list of lines
+    """
     if column_names is not None:
         dashes = []
         for column_name in column_names:
             s = str(column_name)
             dashes.append('-' * len(s))
-        rows = [column_names, dashes] + rows
+        aaa = [column_names, dashes] + aaa
     
-    if not rows:
+    if not aaa:
         return []
 
     sss = []
-    max_lens = map(len, rows[0])
-    for row in rows:
+    max_lens = map(len, aaa[0])
+    for aa in aaa:
         ss = []
-        for i, a in enumerate(row):
+        for i, a in enumerate(aa):
             s = str(a)
             max_lens[i] = max(max_lens[i], len(s))
             ss.append(s)

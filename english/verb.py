@@ -1,4 +1,27 @@
-from english.base import LingNumber, LingPerson
+from base.combinatorics import each_choose_one_from_each_list
+from english.base import LingNumber, LingPerson, Tense
+
+
+VerbUsage = enum('VerbUsage: LEMMA PRES_PART PAST_PART CONJUGATED')
+
+
+class VerbInfo(object):
+    """
+    Info about a specific conjugation, participle, lemma, etc.
+    """
+
+    OPTIONS_PER_FIELD = [
+        list(LingNumber.values),
+        list(LingPerson.values),
+        list(Tense.values),
+        list(VerbUsage.values),
+    ]
+
+    def __init__(self, number, person, tense, usage):
+        self.number = number
+        self.person = person
+        self.tense = tense
+        self.usage = usage
 
 
 class ConjugationSpec(object):
@@ -46,6 +69,42 @@ class ConjugationSpec(object):
 
     def past(self, person, number):
         return self._pasts[self._make_index(person, number)]
+
+    def _each_field_with_nones(self):
+        """
+        (nothing) -> yields (word, number, person, tense, usage).
+        """
+        yield self._lemma, None, None, None, Usage.LEMMA
+        yield self._pres_part, None, None, None, Usage.PRES_PART
+        yield self._past_part, None, None, None, Usage.PAST_PART
+
+        numbers = sorted(LingNumber.values)
+        persons = sorted(LingPerson.values)
+        for i, s in enumerate(self._presents):
+            number = numbers[i / 3]
+            person = persons[i % 3]
+            yield s, number, person, Tense.PRES, Usage.CONJUGATED
+
+        for i, s in enumerate(self._pasts):
+            number = numbers[i / 3]
+            person = persons[i % 3]
+            yield s, number, person, Tense.PAST, Usage.CONJUGATED
+
+    def each_field(self):
+        for aa in self._each_field_with_nones():
+            word = aa[0]
+
+            options_per_field = []
+            for i, a in enumerate(aa[1:]):
+                if a is None:
+                    options = VerbInfo.OPTIONS_PER_FIELD[i]
+                else:
+                    options = [a]
+                options_per_field.append(options)
+
+            for aa_without_nones in \
+                    each_choose_one_from_each_list(options_per_field):
+                yield word, VerbInfo(*aa_without_nones)
 
 
 class StringTransform(object):

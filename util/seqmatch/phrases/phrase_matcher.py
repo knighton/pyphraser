@@ -1,7 +1,7 @@
-from categorize_token.expression import Expression
-from categorize_token.token_categorizer import TokenCategorizer
-from matching.block_parser import BlockParser
-from matching.list_sequence_matcher import ListSequenceMatcher
+from util.tokcat.expression import Expression
+from util.tokcat.token_categorizer import TokenCategorizer
+from util.seqmatch.phrases.block_parser import BlockParser
+from util.seqmatch.sequences.list_sequence_matcher import ListSequenceMatcher
 
 
 class PhraseMatcher(object):

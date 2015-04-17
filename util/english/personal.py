@@ -1,9 +1,9 @@
 from collections import defaultdict
 
-from english.base import LingGender, LingNumber, LingPerson
-from util.dicts import v2kk_from_k2v
-from util.enum import enum
-from util.table import Table
+from util.english.base import LingGender, LingNumber, LingPerson
+from util.misc.dicts import v2kk_from_k2v
+from util.misc.enum import enum
+from util.misc.table import Table
 
 
 # A column of the personal pronouns and determiners table.

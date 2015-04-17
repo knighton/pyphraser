@@ -1,5 +1,5 @@
-from base.combinatorics import each_choose_one_from_each_list
-from english.base import LingNumber, LingPerson, Tense
+from util.english.base import LingNumber, LingPerson, Tense
+from util.misc.combinatorics import each_choose_one_from_each_list
 
 
 VerbUsage = enum('VerbUsage: LEMMA PRES_PART PAST_PART FINITE')

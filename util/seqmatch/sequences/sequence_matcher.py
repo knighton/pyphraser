@@ -1,6 +1,6 @@
 # TODO: match empty options.
 
-from matching.sequence_match import SequenceMatch
+from util.seqmatch.sequences.sequence_match import SequenceMatch
 
 
 class SequenceMatcher(object):

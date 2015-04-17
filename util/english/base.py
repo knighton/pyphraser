@@ -1,4 +1,4 @@
-from util.enum import enum
+from util.misc.enum import enum
 
 
 LingNumber = enum('LingNumber: SING PLUR')

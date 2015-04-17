@@ -1,5 +1,5 @@
-from categorize_token.precompute.personal_evaluator import PersProEvaluator, PosDetEvaluator
-from categorize_token.precompute.verb_evaluator import VerbEvaluator
+from util.tokcat.precompute.personal_evaluator import PersProEvaluator, PosDetEvaluator
+from util.tokcat.precompute.verb_evaluator import VerbEvaluator
 
 
 class ClosedClassEvaluator(object):

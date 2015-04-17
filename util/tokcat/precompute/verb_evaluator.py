@@ -11,15 +11,12 @@ FILTERS = {
         ('2nd', Person.SECOND),
         ('3rd', Person.THIRD),
     ],
-    'tense': [
-        ('pres', Tense.PRES),
-        ('past', Tense.PAST),
-    ],
-    'usage': [
-        ('lemma',    VerbUsage.LEMMA),
-        ('prespart', VerbUsage.PRES_PART),
-        ('pastpart', VerbUsage.PAST_PART),
-        ('finite',   VerbUsage.FINITE),
+    'verb_field_type': [
+        ('lemma',    VerbFieldType.LEMMA),
+        ('prespart', VerbFieldType.PRES_PART),
+        ('pastpart', VerbFieldType.PAST_PART),
+        ('pres',     VerbFieldType.FINITE_PRES),
+        ('past',     VerbFieldType.FINITE_PAST),
     ],
 }
 

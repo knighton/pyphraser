@@ -2,7 +2,7 @@ from util.english.base import LingNumber, LingPerson, Tense
 from util.misc.combinatorics import each_choose_one_from_each_list
 
 
-VerbUsage = enum('VerbUsage: LEMMA PRES_PART PAST_PART FINITE')
+VerbFieldType = enum('VerbFieldType: LEMMA PRES_PART PAST_PART FINITE_PRES FINITE_PAST')
 
 
 class VerbInfo(object):
@@ -13,22 +13,19 @@ class VerbInfo(object):
     OPTIONS_PER_FIELD = [
         list(LingNumber.values),
         list(LingPerson.values),
-        list(Tense.values),
-        list(VerbUsage.values),
+        list(VerbFieldType.values),
     ]
 
-    def __init__(self, number, person, tense, usage):
+    def __init__(self, number, person, verb_field_type):
         self.number = number
         self.person = person
-        self.tense = tense
-        self.usage = usage
+        self.verb_field_type = verb_field_type
 
     def to_d(self):
         return {
             'number': self.number,
             'person': self.person,
-            'tense':  self.tense,
-            'usage':  self.usage,
+            'verb_field_type':  self.verb_field_type,
         }
 
 
@@ -80,23 +77,23 @@ class ConjugationSpec(object):
 
     def _each_field_with_noneable_attrs(self):
         """
-        (nothing) -> yields (word, number, person, tense, usage).
+        (nothing) -> yields (word, number, person, verb field type).
         """
-        yield self._lemma, None, None, None, Usage.LEMMA
-        yield self._pres_part, None, None, None, Usage.PRES_PART
-        yield self._past_part, None, None, None, Usage.PAST_PART
+        yield self._lemma, None, None, VerbFieldType.LEMMA
+        yield self._pres_part, None, None, VerbFieldType.PRES_PART
+        yield self._past_part, None, None, VerbFieldType.PAST_PART
 
         numbers = sorted(LingNumber.values)
         persons = sorted(LingPerson.values)
         for i, s in enumerate(self._presents):
             number = numbers[i / 3]
             person = persons[i % 3]
-            yield s, number, person, Tense.PRES, Usage.FINITE
+            yield s, number, person, VerbFieldType.FINITE_PRES,
 
         for i, s in enumerate(self._pasts):
             number = numbers[i / 3]
             person = persons[i % 3]
-            yield s, number, person, Tense.PAST, Usage.FINITE
+            yield s, number, person, VerbFieldType.FINITE_PAST
 
     def each_field_with_attrs(self):
         for aa in self._each_field_with_noneable_attrs():

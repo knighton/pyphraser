@@ -1,4 +1,4 @@
-from categorize_token.closed_class.closed_class_type_evaluator import ClosedClassTypeEvaluator
+from categorize_token.precompute.closed_class_type_evaluator import ClosedClassTypeEvaluator
 
 
 FILTERS = {
@@ -25,7 +25,7 @@ FILTERS = {
 
 
 class VerbEvaluator(ClosedClassTypeEvaluator):
-    def __init__(self, conjugator, filters):
+    def __init__(self, conjugator):
         self._conjugator = conjugator
         self._filters = FILTERS
         super(VerbExpressionEvaluator, self).__init__()

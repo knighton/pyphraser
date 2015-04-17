@@ -1,6 +1,6 @@
 from copy import deepcopy
 
-from categorize_token.closed_class.closed_class_type_evaluator import ClosedClassTypeEvaluator
+from categorize_token.precompute.closed_class_type_evaluator import ClosedClassTypeEvaluator
 
 
 PERS_PRO_FILTERS = {

@@ -39,7 +39,7 @@ class TokenCategorizer(object):
         # type.
         self._key2dynamic_exprs = defaultdict(list)
 
-        # The dynamic evaluators are required for get_categories().
+        # The dynamic evaluators are required for get_category_ids_for_token().
         self._key2open_class_evaluator = key2open_class_evaluator
 
         for expr in expressions:
@@ -71,7 +71,7 @@ class TokenCategorizer(object):
             # No one could recognize the Expression.
             assert False
 
-    def get_categories(self, s):
+    def get_category_ids_for_token(self, s):
         """
         str -> list of Category ID.
         """
@@ -97,3 +97,10 @@ class TokenCategorizer(object):
 
         # Neither in precomputed nor dynamic.
         return []
+
+    def get_category_id_of_expr(self, expr):
+        """
+        Expression -> Category ID.
+        """
+        s = expr.to_canonical_str()
+        return self._exprstr2catid[s]

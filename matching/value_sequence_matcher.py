@@ -1,4 +1,4 @@
-from match_sequence.sequence_matcher import Match, SequenceMatcher
+from matching.sequence_matcher import Match, SequenceMatcher
 
 
 class ValueSequenceMatcher(SequenceMatcher):

@@ -1,9 +1,6 @@
 from threats import conf
 from threats.threat_tokenizer import ThreatTokenizer
-from util.sequence_matcher import SequenceMatcher
-from util.token_group_oracle import TokenGroupOracle
-from util.token_grouper import TokenGrouper
-from util.token_grouping_sequence_matcher import TokenGroupingSequenceMatcher
+from util.seqmatch.phrases.phrase_matcher import PhraseMatcher
 
 
 class ThreatMatch(object):
@@ -18,25 +15,17 @@ class ThreatMatcher(object):
                  aux_verb_categories, adverbs, main_verbs):
         self._tokenizer = ThreatTokenizer()
 
-        token_group_oracle = TokenGroupOracle()
-        token_grouper = TokenGrouper()
-        sequence_matcher = SequenceMatcher()
-        self._matcher = TokenGroupingSequenceMatcher(
-            token_group_oracle, token_grouper, sequence_matcher)
-
-        options_per_sequence = [
+        blocks = [
             subjects,
             aux_verbs,
             adverbs,
             main_verbs,
         ]
-        self._matcher.configure(options_per_sequence)
-
-        from util.io import print_func
-        map(print_func, self._matcher.dump())
 
         self._subject_categories = subject_categories
         self._aux_verb_categories = aux_verb_categories
+
+        self._phrase_matcher = PhraseMatcher(blocks)
 
     @staticmethod
     def init_default():
@@ -49,13 +38,12 @@ class ThreatMatcher(object):
         Text, whether overlapping -> yields list of ThreatMatch.
         """
         ss = self._tokenizer.tokenize(text)
-        for spans, sequence_choice_lists in \
-                self._matcher.match(ss, allow_overlapping):
-            matches = []
-            for span, choices in zip(spans, sequence_choice_lists):
-                subject_x, aux_verb_x = choices[:2]
+        for match_list in self._phrase_matcher.each_match_list(ss):
+            rr = []
+            for match in match_list:
+                subject_x, aux_verb_x = match.option_choices[:2]
                 subject_cat = self._subject_categories[subject_x]
                 aux_verb_cat = self._aux_verb_categories[aux_verb_x]
-                m = ThreatMatch(span, subject_cat, aux_verb_cat)
-                matches.append(m)
-            yield matches
+                m = ThreatMatch(match.span, subject_cat, aux_verb_cat)
+                rr.append(m)
+            yield rr

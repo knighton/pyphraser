@@ -8,7 +8,7 @@ Threat detection looks for sequences of the form
 which are defined below.
 """
 
-from util.enum import enum
+from util.misc.enum import enum
 
 
 def lines(s):

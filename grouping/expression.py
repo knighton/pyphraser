@@ -1,7 +1,7 @@
 import re
 
 
-class TokenGenExpression(object):
+class Expression(object):
     """
     Configuration for generating token groups.
 
@@ -38,4 +38,4 @@ class TokenGenExpression(object):
             else:
                 assert ARG_RE.match(s)
                 args.append(s)
-        return TokenGenExpression(key, args, filters)
+        return Expression(key, args, filters)

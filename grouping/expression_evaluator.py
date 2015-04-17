@@ -1,4 +1,4 @@
-class TokenGenExpressionEvaluator(object):
+class ExpressionEvaluator(object):
     """
     Has a black box that yields tokens and their attributes and the knowledge of
     what the filters are regarding those attributes.

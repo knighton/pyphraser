@@ -1,156 +1,150 @@
-from collections import defaultdict
+# TODO: match empty options.
+
+
+class Match(object):
+    def __init__(self, span, option_choices):
+        # A pair: begin index, end index exclusive.
+        self.span = span
+
+        # An option index per block.
+        self.option_choices = option_choices
 
 
 class SequenceMatcher(object):
     """
-    Given a list of tokens, finds sequence matches.
-    
-    This means one list from each list of options must match, verbatim, in
-    order, contiguously.
+    Given a list of items, finds sequence matches.
+
+    This means one list from each list of options must match, in order,
+    contiguously.
 
     For example,
 
-    [a]      []      [cat]     [lounged around]
-    [the]    [fat]   [dog]     [dozed]
-    [some] x       x [horse] x [dozed off]
-    [my]                       [ate]
-    [your]                     [slept]
+        TokenSequenceMatcher subclass:
 
-    "I told you my lazy fat cat slept all day"
-        -> []
+        [a]      []      [cat]     [lounged around]
+        [the]    [fat]   [dog]     [dozed]
+        [some] x       x [horse] x [dozed off]
+        [my]                       [ate]
+        [your]                     [slept]
 
-    "I told you my fat cat slept all day and your dog ate my homework"
-        -> [
-               ((2, 7),   [3, 1, 0, 4]),
-               ((10, 13), [4, 0, 1, 3]),
-           ]
+        "I told you my lazy fat cat slept all day"
+            -> []
+
+        "I told you my fat cat slept all day and your dog ate my homework"
+            -> [
+                   Match((2, 7),   [3, 1, 0, 4]),
+                   Match((10, 13), [4, 0, 1, 3]),
+               ]
     """
 
-    def __init__(self, options_per_sequence=None):
-        self._options_per_sequence = None
-        self._seqx2token2optionxx = []
-        self._seqx2canbeempty = []
-        self.configure(options_per_sequence)
+    def __init__(self, blocks_to_match_against):
+        """
+        blocks -> None
 
-    def configure(self, options_per_sequence=None):
-        self._options_per_sequence = options_per_sequence
-        self._check_and_preprocess()
+        Our goal is to match one option from each block, in order, contiguously.
+        Each block is a list of options.  Each option is a list of values.
+        """
+        self._blocks = blocks_to_match_against
 
-    def _check_and_preprocess(self):
-        if self._options_per_sequence is None:
-            return
+        # Verify no duplicate options.
+        for block in self._blocks:
+            seen = set()
+            for option in block:
+                key = tuple(option)
+                assert key not in seen
+                seen.add(key)
 
-        # Duplicates are not allowed.
-        for token_lists in self._options_per_sequence:
-            seen_ss = set()
-            for token_list in token_lists:
-                ss = tuple(token_list)
-                assert ss not in seen_ss
-                seen_ss.add(ss)
-            
-        # Build an index of the first token of each sequence for performance.
-        self._seqx2token2optionxx = []
-        self._seqx2canbeempty = []
-        for i, token_lists in enumerate(self._options_per_sequence):
+        # Index the first item of each option per formance.
+        self._value2optionxx_per_block = []
+        self._canbeempty_per_block = []
+        for i, block in enumerate(self._blocks):
             can_be_empty = False
-            token2optionxx = defaultdict(list)
-            for j, token_list in enumerate(token_lists):
-                if token_list:
-                    first_token = token_list[0]
-                    token2optionxx[first_token].append(j)
+            value2optionxx = {}
+            for j, option in enumerate(block):
+                if option:
+                    value2optionxx[value].append(j)
                 else:
-                    # There can only be one empty list, since we checkd for
-                    # duplicate lists above.
-                    assert not can_be_empty
-                    can_be_empty
-            self._seqx2token2optionxx.append(token2optionxx)
-            self._seqx2canbeempty.append(can_be_empty)
+                    can_be_empty = True
+            self._canbeempty_per_block.append(can_be_empty)
+            self._value2optionxx_per_block.append(value2optionxx)
 
-    def _get_sequences_that_match_from(
-            self, tokens, begin_token_index, sequence_choices):
-        # Bail if we're out of tokens.
-        if begin_token_index == len(tokens):
+    def _each_match_that_starts_at_inner(
+            self, items, begin_item_index, option_choices):
+        """
+        (item list, index into item list, option choices) -> yields Match
+        """
+        # Bail if we're out of items.
+        if begin_item_index == len(items):
             return
 
-        # Get the expected sequence.
-        cur_sequence_index = len(sequence_choices) - 1
-        choice = sequence_choices[-1]
-        expected_sequence = \
-            self._options_per_sequence[cur_sequence_index][choice]
+        # Get the sequence option we are supposed to match.
+        cur_block_index = len(option_choices) - 1
+        option_index = option_choices[cur_block_index]
+        values_to_match = self._blocks[cur_block_index][option_index]
 
-        # Check each token in the sequence.
-        for i in xrange(len(expected_sequence)):
-            token_index = begin_token_index + i
-            if token_index == len(tokens):
+        # Check each item in the sequence.
+        for i, value_to_match in enumerate(values_to_match):
+            item_index = begin_item_index + i
+            if item_index == len(items):
                 return
 
-            token = tokens[token_index]
-            expected_token = expected_sequence[i]
-            if token != expected_token:
+            item = items[item_index]
+            if not self._does_item_match_value(item, value_to_match):
                 return
 
-        # Ran out of sequences to match means the match was a success.
-        next_sequence_index = cur_sequence_index + 1
-        if next_sequence_index == len(self._seqx2token2optionxx):
-            yield sequence_choices
+        # Ran out of sequences options to match means the match was a success.
+        next_block_index = cur_block_index + 1
+        if next_block_index == len(self._value2optionxx_per_block):
+            a = begin_item_index
+            z_excl = a
+            for i, option_index in enumerate(option_choices):
+                option = self._blocks[i][option_index]
+                z_excl += len(option)
+            yield Match(span, option_choices)
 
-        # Else, if we're out of tokens, match was a failure.
-        begin_token_index += len(expected_sequence)
-        if begin_token_index == len(tokens):
+        # Else, if we're out of tokens, the match was a failure.
+        begin_item_index += len(values_to_match)
+        if begin_item_index == len(items):
             return
 
-        # Try to match the beginning of the next sequence.
-        token = tokens[begin_token_index]
-        for choice_index in \
-                self._seqx2token2optionxx[next_sequence_index].get(token, []):
-            new_sequence_choices = sequence_choices + [choice_index]
-            for r in self._get_sequences_that_match_from(
-                    tokens, begin_token_index, new_sequence_choices):
-                yield r
+        # We have tokens and sequences to match left, so try to match the
+        # beginning of the next sequence.
+        item = items[begin_item_index]
+        for choice in self._get_possible_options(next_block_index, item):
+            new_option_choices = option_choices + [choice]
+            for match in self._each_match_that_starts_at_inner(
+                    items, begin_token_index, new_option_choices):
+                yield match
 
-    def _find_next_match(self, tokens, token_index):
-        option_xx = []
-        while token_index < len(tokens):
-            token = tokens[token_index]
-            option_xx = self._seqx2token2optionxx[0].get(token, [])
-            if option_xx:
-                break
-            token_index += 1
+    def _each_match_that_starts_at(self, items, item_index):
+        """
+        (items, item index) -> yields Match
+        """
+        first_block = 0
+        item = items[item_index]
+        for option_index in self._get_possible_options(self, first_block, item):
+            option_choices = [option_index]
+            for match in self._each_match_that_starts_at_inner(
+                    items, item_index, option_choices):
+                yield match
 
-        for option_index in option_xx:
-            sequence_choices = [option_index]
-            for sequence_choices in self._get_sequences_that_match_from(
-                    tokens, token_index, sequence_choices):
-                a = token_index
-                sequence_len = 0
-                for i, choice in enumerate(sequence_choices):
-                    sequence_len += len(self._options_per_sequence[i][choice])
-                z_excl = token_index + sequence_len
-                yield (a, z_excl), sequence_choices
+    def _each_match_list_that_starts_at(self, items, item_index):
+        """
+        (items, item index) -> yields list of Match
+        """
+        while item_index < len(items):
+            for match in self._each_match_that_starts_at(items, item_index):
+                resume_item_index = match.span[-1]
+                for matches in self._each_match_list_that_starts_at(
+                        items, resume_item_index):
+                    yield [match] + matches
+            item_index += 1
 
-    def _find_all_matches_from(
-            self, tokens, token_index, allow_overlapping, spans,
-            sequence_choice_lists):
-        if token_index == len(tokens):
-            return
-
-        for span, sequence_choices in \
-                self._find_next_match(tokens, token_index):
-            if allow_overlapping:
-                resume_index = token_index + 1
-            else:
-                last_span = spans[-1]
-                resume_index = last_span[-1]
-            for span, sequence_choices in self._find_all_matches_from(
-                    tokens, resume_index, allow_overlapping, spans + [span],
-                    sequence_choice_lists + [sequence_choices]):
-                yield span, sequence_choices
-
-    def match(self, tokens, allow_overlapping):
-        token_index = 0
-        spans = []
-        sequence_choice_lists = []
-        for span, sequence_choices in self._find_all_matches_from(
-                tokens, token_index, allow_overlapping, spans,
-                sequence_choice_lists):
-            yield span, sequence_choices
+    def each_match_list(self, items):
+        """
+        items -> yields list of Match
+        """
+        item_index = 0
+        for match_list in self._each_match_list_that_starts_at(
+                items, item_index):
+            yield match_list

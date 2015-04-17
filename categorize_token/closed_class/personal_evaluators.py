@@ -1,6 +1,6 @@
 from copy import deepcopy
 
-from categorize_token.precompute.type_evaluator import TypeEvaluator
+from categorize_token.closed_class.closed_class_type_evaluator import ClosedClassTypeEvaluator
 
 
 PERS_PRO_FILTERS = {
@@ -39,7 +39,7 @@ del POS_DET_FILTERS['case']
 del POS_DET_FILTERS['poss']
 
 
-class PersProEvaluator(TypeEvaluator):
+class PersProEvaluator(ClosedClassTypeEvaluator):
     """
     Personal pronoun expression evaluator.
     """
@@ -47,7 +47,7 @@ class PersProEvaluator(TypeEvaluator):
     def __init__(self, personals_mgr):
         self._personals_mgr = personals_mgr
         self._filters = PERS_PRO_FILTERS
-        super(TypeEvaluator, self).__init__()
+        super(ClosedClassTypeEvaluator, self).__init__()
 
     def _get_filters(self):
         return self._filters
@@ -58,7 +58,7 @@ class PersProEvaluator(TypeEvaluator):
             yield token, ppi.to_d()
 
 
-class PosDetEvaluator(TypeEvaluator):
+class PosDetEvaluator(ClosedClassTypeEvaluator):
     """
     Possessive determiner expression evaluator.
     """

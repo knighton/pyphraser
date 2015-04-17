@@ -1,8 +1,8 @@
-from categorize_token.precompute.personal_evaluator import PersProEvaluator, PosDetEvaluator
-from categorize_token.precompute.verb_evaluator import VerbEvaluator
+from categorize_token.closed_class.personal_evaluator import PersProEvaluator, PosDetEvaluator
+from categorize_token.closed_class.verb_evaluator import VerbEvaluator
 
 
-class Evaluator(object):
+class ClosedClassEvaluator(object):
     """
     Turns magic config language into groups of tokens.
     """

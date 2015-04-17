@@ -1,5 +1,5 @@
 from util.tokcat.expression import Expression
-from util.tokcat.token_categorizer import TokenCategorizer
+from util.tokcat.token_categorizer import EnglishTokenCategorizer
 from util.seqmatch.phrases.block_parser import BlockParser
 from util.seqmatch.sequences.list_sequence_matcher import ListSequenceMatcher
 
@@ -13,15 +13,13 @@ class PhraseMatcher(object):
     sending them to the ListSequenceMatcher for analysis.
     """
 
-    def __init__(self, key2closed_class_evaluator, key2open_class_evaluator,
-                 blocks_as_expr_lines):
+    def __init__(self, blocks_as_expr_lines):
         # Process the input config lines into a format we can use, extracting
         # the Expressions that we will recognize instances of.
         parser = BlockParser()
         blocks_as_exprs = parser.parse_blocks(blocks_as_expr_lines)
         expressions = self._expressions_from_blocks_as_exprs(blocks_as_exprs)
-        self._token_categorizer = TokenCategorizer(
-            key2closed_class_evaluator, key2open_class_evaluator, expressions)
+        self._token_categorizer = EnglishTokenCategorizer(expressions)
         blocks_as_lists = self._make_blocks_as_lists(blocks_as_exprs)
 
         # Create the sequence matcher.

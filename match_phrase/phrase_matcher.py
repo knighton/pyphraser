@@ -51,7 +51,7 @@ class PhraseMatcher(object):
                     else:
                         assert False
 
-    def preprocess_input_tokens(self, ss):
+    def _preprocess_input_tokens(self, ss):
         """
         list of token -> list of list of 'value'
 

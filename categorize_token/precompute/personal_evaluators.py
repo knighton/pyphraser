@@ -1,6 +1,6 @@
 from copy import deepcopy
 
-from categorize_token.internal.type_expression_evaluator import TypeExpressionEvaluator
+from categorize_token.precompute.type_evaluator import TypeEvaluator
 
 
 PERS_PRO_FILTERS = {
@@ -39,32 +39,39 @@ del POS_DET_FILTERS['case']
 del POS_DET_FILTERS['poss']
 
 
-class PersonalPronounExpressionEvaluator(TypeExpressionEvaluator):
+class PersProEvaluator(TypeEvaluator):
+    """
+    Personal pronoun expression evaluator.
+    """
+
     def __init__(self, personals_mgr):
         self._personals_mgr = personals_mgr
         self._filters = PERS_PRO_FILTERS
-        super(PersonalPronounExpressionEvaluator, self).__init__()
+        super(TypeEvaluator, self).__init__()
 
-    def get_filters(self):
+    def _get_filters(self):
         return self._filters
 
-    def each_with_attrs(self, args):
+    def _each_with_attrs(self, args):
         assert not args
         for token, ppi in self._personals_mgr.each_pronoun_with_attrs():
             yield token, ppi.to_d()
 
 
-class PossessiveDeterminerExpressionEvaluator(TypeExpressionEvaluator):
+class PosDetEvaluator(TypeEvaluator):
+    """
+    Possessive determiner expression evaluator.
+    """
+
     def __init__(self, personals_mgr):
         self._personals_mgr = personals_mgr
         self._filters = POS_DET_FILTERS
-        super(PossessiveDeterminerExpressionEvaluator, self).__init__()
+        super(PosDetEvaluator, self).__init__()
 
-    def get_filters(self):
+    def _get_filters(self):
         return self._filters
 
-    def each_with_attrs(self, args):
+    def _each_with_attrs(self, args):
         assert not args
         for token, pdi in self._personals_mgr.each_determiner_with_attrs():
             yield token, pdi.to_d()
-

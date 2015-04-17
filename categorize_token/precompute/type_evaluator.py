@@ -1,4 +1,4 @@
-class TypeExpressionEvaluator(object):
+class TypeEvaluator(object):
     """
     Has a black box that yields tokens and their attributes and the knowledge of
     what the filters are regarding those attributes.
@@ -25,7 +25,7 @@ class TypeExpressionEvaluator(object):
                 self._filter2dimension[filter_name] = dimension
                 self._filter2value[filter_name] = value
 
-    def get_filters(self):
+    def _get_filters(self):
         """
         () -> dict of dimension to list of (filter name, filter value).
 
@@ -37,7 +37,7 @@ class TypeExpressionEvaluator(object):
         """
         raise NotImplementedError
 
-    def each_token_with_attrs(self, args):
+    def _each_token_with_attrs(self, args):
         """
         Expression's args -> yields (token, token attributes)
 

@@ -1,4 +1,4 @@
-from categorize_token.internal.type_expression_evaluator import TypeExpressionEvaluator
+from categorize_token.precompute.type_evaluator import TypeEvaluator
 
 
 FILTERS = {
@@ -24,16 +24,16 @@ FILTERS = {
 }
 
 
-class VerbExpressionEvaluator(TypeExpressionEvaluator):
+class VerbEvaluator(TypeEvaluator):
     def __init__(self, conjugator, filters):
         self._conjugator = conjugator
         self._filters = FILTERS
         super(VerbExpressionEvaluator, self).__init__()
 
-    def get_filters(self):
+    def _get_filters(self):
         return self._filters
 
-    def each_token_with_attrs(self, args):
+    def _each_token_with_attrs(self, args):
         lemma = args[0]
         assert len(args) == 1
         spec = self._conjugator.conjugate(lemma)

@@ -55,6 +55,15 @@ class Expression(object):
 
         return Expression(key, args, filters)
 
+    def key(self):
+        return self._key
+
+    def args(self):
+        return self._args
+
+    def filters(self):
+        return self._filters
+
     def to_canonical_str(self):
         if self._to_s:
             return self._to_s

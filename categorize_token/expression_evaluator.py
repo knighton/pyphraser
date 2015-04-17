@@ -1,20 +1,15 @@
-from collections import defaultdict
-import re
-
-from util.dicts import v2k_from_k2vv
 from english.personal import PersonalsManager
 from english.verb import Conjugator
 
 
 
-class TokenGroupOracle(object):
+class ExpressionEvaluator(object):
     """
     Turns magic config language into groups of tokens.
     """
 
     def __init__(self, conjugator, personals_mgr):
         self._key2handler = {
-            # 'number': NumberEvaluator(),
             'perspro': PersonalPronounEvaluator(conjugator),
             'posdet':  PossessiveDeterminerEvaluator(personals_mgr),
             'to':      VerbExpressionEvaluator(personals_mgr),
@@ -23,7 +18,7 @@ class TokenGroupOracle(object):
     def init_default():
         conjugator = Conjugator.init_default()
         personals_mgr = PersonalsManager.init_default()
-        return TokenGroupOracle(conjugator, personals_mgr)
+        return ExpressionEvaluator(conjugator, personals_mgr)
 
     def get_token_group(self, text):
         """

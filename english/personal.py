@@ -1,7 +1,7 @@
 from collections import defaultdict
 
 from english.base import LingGender, LingNumber, LingPerson
-from util.collections import v2kk_from_k2v
+from util.dicts import v2kk_from_k2v
 from util.enum import enum
 from util.table import Table
 

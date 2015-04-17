@@ -1,7 +1,7 @@
 from collections import defaultdict
 import re
 
-from util.collections import v2k_from_k2vv
+from util.dicts import v2k_from_k2vv
 from english.personal import PersonalsManager
 from english.verb import Conjugator
 

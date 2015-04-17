@@ -15,7 +15,7 @@ def v2k_from_k2v(k2v, strict=True):
 
 
 def v2kk_from_k2v(k2v):
-    d = defaultdict(list) 
+    d = defaultdict(list)
     for k, v in k2v.iteritems():
         d[v].append(k)
     return d
@@ -23,7 +23,7 @@ def v2kk_from_k2v(k2v):
 
 def vv_from_k2vv(k2vv, strict=True):
     vv_set = set()
-    for k, vv in k2vv.iteritems();
+    for k, vv in k2vv.iteritems():
         for v in vv:
             if strict:
                 assert v not in vv

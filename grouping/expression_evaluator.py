@@ -50,8 +50,12 @@
         raise NotImplementedError
 
     def _is_match(self, have_dim2value, filter_dim2values):
-        for have_dim, have_value in have_dim2value.iteritems():
-            if value not in filter_dim2values[have_dim]:
+        """
+        (actual dim -> value), (dim -> possible values) -> whether OK
+        """
+        for filter_dim, possible_values in filter_dim2values.iteritems():
+            have_value = have_dim2value[filter_dim]
+            if have_value not in possible_values:
                 return False
 
         return True

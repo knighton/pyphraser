@@ -1,4 +1,4 @@
-from grouping.expression_evaluator import ExpressionEvaluator
+from categorize_token.expression_evaluator import ExpressionEvaluator
 
 
 FILTERS = {

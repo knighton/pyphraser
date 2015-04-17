@@ -1,6 +1,6 @@
 from copy import deepcopy
 
-from categorize_token.internal.expression_evaluator import ExpressionEvaluator
+from categorize_token.internal.type_expression_evaluator import TypeExpressionEvaluator
 
 
 PERS_PRO_FILTERS = {
@@ -39,7 +39,7 @@ del POS_DET_FILTERS['case']
 del POS_DET_FILTERS['poss']
 
 
-class PersonalPronounExpressionEvaluator(ExpressionEvaluator):
+class PersonalPronounExpressionEvaluator(TypeExpressionEvaluator):
     def __init__(self, personals_mgr):
         self._personals_mgr = personals_mgr
         self._filters = PERS_PRO_FILTERS
@@ -54,7 +54,7 @@ class PersonalPronounExpressionEvaluator(ExpressionEvaluator):
             yield token, ppi.to_d()
 
 
-class PossessiveDeterminerExpressionEvaluator(ExpressionEvaluator):
+class PossessiveDeterminerExpressionEvaluator(TypeExpressionEvaluator):
     def __init__(self, personals_mgr):
         self._personals_mgr = personals_mgr
         self._filters = POS_DET_FILTERS

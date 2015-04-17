@@ -1,4 +1,4 @@
-from categorize_token.internal.expression_evaluator import ExpressionEvaluator
+from categorize_token.internal.type_expression_evaluator import TypeExpressionEvaluator
 
 
 FILTERS = {
@@ -24,7 +24,7 @@ FILTERS = {
 }
 
 
-class VerbExpressionEvaluator(ExpressionEvaluator):
+class VerbExpressionEvaluator(TypeExpressionEvaluator):
     def __init__(self, conjugator, filters):
         self._conjugator = conjugator
         self._filters = FILTERS

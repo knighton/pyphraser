@@ -1,23 +1,50 @@
+# TODO: match empty options.
+
+
 class Match(object):
     def __init__(self, span, option_choices):
+        # A pair: begin index, end index exclusive.
         self.span = span
+
+        # An option index per block.
         self.option_choices = option_choices
 
 
 class SequenceMatcher(object):
-    def __init__(self, blocks):
+    """
+    Given a list of items, finds sequence matches.
+
+    This means one list from each list of options must match, in order,
+    contiguously.
+
+    For example,
+
+        TokenSequenceMatcher subclass:
+
+        [a]      []      [cat]     [lounged around]
+        [the]    [fat]   [dog]     [dozed]
+        [some] x       x [horse] x [dozed off]
+        [my]                       [ate]
+        [your]                     [slept]
+
+        "I told you my lazy fat cat slept all day"
+            -> []
+
+        "I told you my fat cat slept all day and your dog ate my homework"
+            -> [
+                   Match((2, 7),   [3, 1, 0, 4]),
+                   Match((10, 13), [4, 0, 1, 3]),
+               ]
+    """
+
+    def __init__(self, blocks_to_match_against):
         """
         blocks -> None
 
         Our goal is to match one option from each block, in order, contiguously.
         Each block is a list of options.  Each option is a list of values.
-        
-        The caller provides a list of items to match.  According to my
-        subclass, items may be
-        * TokenSequenceMatcher: values to compare directly
-        * ListMembershipSequenceMatcher: lists of values to check for membership
         """
-        self._blocks = blocks
+        self._blocks = blocks_to_match_against
 
         # Verify no duplicate options.
         for block in self._blocks:
@@ -103,7 +130,7 @@ class SequenceMatcher(object):
 
     def _each_match_list_that_starts_at(self, items, item_index):
         """
-        (items, item index) -> yields list of Match ordered by location
+        (items, item index) -> yields list of Match
         """
         while item_index < len(items):
             for match in self._each_match_that_starts_at(items, item_index):
@@ -114,6 +141,9 @@ class SequenceMatcher(object):
             item_index += 1
 
     def each_match_list(self, items):
+        """
+        items -> yields list of Match
+        """
         item_index = 0
         for match_list in self._each_match_list_that_starts_at(
                 items, item_index):

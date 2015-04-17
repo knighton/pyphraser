@@ -7,6 +7,8 @@ class Expression(object):
 
     Passed from TokenGroupOracle to one of its evaluators for processing.
 
+        '(perspro +2nd) (to be +past) right (number +int +pos) times'
+
     Expressions are
     * a keyword, that is the first token (verb, personal pronoun, etc.)
     * a list of "arguments" (following words without +).  Open class.  Used for
@@ -20,9 +22,12 @@ class Expression(object):
     ARG_RE = re.compile('^[a-z0-9]+$')
 
     def __init__(self, key, args, filters):
-        self.key = key
-        self.args = args
-        self.filters = filters
+        self._key = key
+        self._args = args
+        self._filters = filters
+
+        assert self._filters == sorted(self._filters)
+        self._to_s = None
 
     @staticmethod
     def init_from_string(text):
@@ -46,13 +51,18 @@ class Expression(object):
             s = s[1:]
             assert ARG_RE.match(s)
             filters.append(s)
+        filters.sort()
 
         return Expression(key, args, filters)
 
-    def to_s(self):
-        ss = [self.key]
-        for arg in self.args:
+    def to_canonical_str(self):
+        if self._to_s:
+            return self._to_s
+
+        ss = [self._key]
+        for arg in self._args:
             ss.append(arg)
-        for flag in self.filters:
+        for flag in self._filters:
             ss.append('+' + flag)
-        return ' '.join(ss)
+        self._to_s = ' '.join(ss)
+        return self._to_s

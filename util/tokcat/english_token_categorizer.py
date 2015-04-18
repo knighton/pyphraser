@@ -1,7 +1,8 @@
 from util.english.personal import PersonalsManager
 from util.english.verb import Conjugator
 from util.tokcat.token_categorizer import TokenCategorizer
-from util.tokcat.precompute.personal_evaluators import PersProEvaluator, PosDetEvaluator
+from util.tokcat.precompute.personal_evaluators import \
+    PersProEvaluator, PosProEvaluator, PosDetEvaluator
 from util.tokcat.precompute.verb_evaluator import VerbEvaluator
 from util.tokcat.dynamic.number_evaluator import NumberEvaluator
 
@@ -13,6 +14,7 @@ class EnglishTokenCategorizer(TokenCategorizer):
 
         key2closed = {
             'perspro': PersProEvaluator(personals_mgr),
+            'pospro':  PosProEvaluator(personals_mgr),
             'posdet':  PosDetEvaluator(personals_mgr),
             'to':      VerbEvaluator(conjugator),
         }

@@ -2,7 +2,7 @@ from collections import defaultdict
 import re
 
 from util.enum import enum
-from util.tokcat.dynamic.open_class_type_evaluator import OpenClassTypeEvaluator
+from util.token_cat.dynamic.open_class_type_evaluator import OpenClassTypeEvaluator
 
 
 NumberType = enum('NumberType: INT FLOAT')

@@ -1,4 +1,4 @@
-from util.tokcat.precompute.closed_class_type_evaluator import ClosedClassTypeEvaluator
+from util.token_cat.precompute.closed_class_type_evaluator import ClosedClassTypeEvaluator
 
 
 FILTERS = {

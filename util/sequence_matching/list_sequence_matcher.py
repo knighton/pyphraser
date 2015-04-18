@@ -1,4 +1,4 @@
-from util.seqmatch.sequences.sequence_matcher import SequenceMatcher
+from util.sequence_matching.sequence_matcher import SequenceMatcher
 
 
 class ListSequenceMatcher(SequenceMatcher):

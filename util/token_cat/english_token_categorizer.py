@@ -1,10 +1,10 @@
 from util.english.personal import PersonalsManager
 from util.english.verb import Conjugator
-from util.tokcat.token_categorizer import TokenCategorizer
-from util.tokcat.precompute.personal_evaluators import \
+from util.token_cat.token_categorizer import TokenCategorizer
+from util.token_cat.precompute.personal_evaluators import \
     PersProEvaluator, PosProEvaluator, PosDetEvaluator
-from util.tokcat.precompute.verb_evaluator import VerbEvaluator
-from util.tokcat.dynamic.number_evaluator import NumberEvaluator
+from util.token_cat.precompute.verb_evaluator import VerbEvaluator
+from util.token_cat.dynamic.number_evaluator import NumberEvaluator
 
 
 class EnglishTokenCategorizer(TokenCategorizer):

@@ -34,7 +34,7 @@ def annotated_lines(enum, s):
         patterns.append(pattern)
         annotation = enum.from_s[annotation.upper()]
         annotations.append(annotation)
-    return patterns, annotation
+    return patterns, annotations
 
 
 SubjectCategory = enum('SubjectCategory: I WE SOMEONE_ELSE RELIGIOUS')

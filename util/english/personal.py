@@ -117,7 +117,7 @@ class Idiolect(object):
         return self._options2choice[options_tuple]
 
 
-def make_pronouns_table(text):
+def make_personals_table(text):
     def on_row_key(s):
         return PersonalsRow.from_s[s]
 
@@ -127,7 +127,7 @@ def make_pronouns_table(text):
     def on_value(s):
         if s == '-':
             return None
-        return s
+        return s.lower()
 
     return Table.init_from_text(text, on_row_key, on_column_key, on_value)
 
@@ -135,7 +135,7 @@ def make_pronouns_table(text):
 # Personal pronouns and determiners table.
 #
 # This is used to provide information about words.  Also note aliases below.
-PERSONALS_TABLE = make_pronouns_table("""
+PERSONALS_TABLE = make_personals_table("""
              NP_SUBJ  NP_OBJ   NP_REFL      POS_SUBJ  POS_OBJ    POS_REFL     POS_DET
     I        I        me       myself       mine      mine       myself's     my
     YOU1     you      you      yourself     yours     yours      yourself's   your

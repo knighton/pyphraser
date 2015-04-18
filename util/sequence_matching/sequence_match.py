@@ -5,3 +5,9 @@ class SequenceMatch(object):
 
         # An option index per block.
         self.option_choices = option_choices
+
+    def to_d(self):
+        return {
+            'span': self.span,
+            'option_choices': self.option_choices,
+        }

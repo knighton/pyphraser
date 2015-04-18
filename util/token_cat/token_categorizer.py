@@ -6,13 +6,25 @@ class Token(object):
         self.s = s              # Token string.
         self.cat_ids = cat_ids  # List of indexes into _cats.
 
+    def to_d(self):
+        return {
+            's': self.s,
+            'cat_ids': self.cat_ids,
+        }
+
 
 class Category(object):
     def __init__(self, cat_id, expr, instances):
-        self.cat_id = cat_id       # Index in _cats.
-        self.expr = expr           # Expression.
-        self.intances = instances  # List of str.
+        self.cat_id = cat_id        # Index in _cats.
+        self.expr = expr            # Expression.
+        self.instances = instances  # List of str.
 
+    def to_d(self):
+        return {
+            'cat_id':    self.cat_id,
+            'expr':      self.expr.to_canonical_string(),
+            'instances': self.instances,
+        }
 
 class TokenCategorizer(object):
     """
@@ -54,7 +66,7 @@ class TokenCategorizer(object):
             # (Expressions can only belong to one type (ie, Expression key)).
             evaluator = key2closed_class_evaluator.get(expr.key())
             if evaluator:
-                ss = evaluator.get_token_group(expr)
+                ss = sorted(evaluator.get_token_group(expr))
                 cat_id = len(self._categories)
                 cat = Category(cat_id, expr, ss)
                 self._categories.append(cat)
@@ -72,6 +84,14 @@ class TokenCategorizer(object):
 
             # No one could recognize the Expression.
             assert False
+
+    def dump(self):
+        import json
+        print 'TokenCategorizer begin'
+        print '\tCategories:'
+        for i, cat in enumerate(self._categories):
+            print '\t\t%d %s' % (i, json.dumps(cat.to_d(), indent=4))
+        print 'TokenCategorizer end'
 
     def get_category_ids_for_token(self, s):
         """

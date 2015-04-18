@@ -73,9 +73,12 @@ class ClosedClassTypeEvaluator(object):
             value = self._filter2value[filter_name]
             filter_dim2values[dimension].append(value)
 
+        seen = set()
         for token, have_dim2value in self._each_token_with_attrs(expr.args()):
             if self._is_match(have_dim2value, filter_dim2values):
-                yield token
+                if token not in seen:
+                    yield token
+                seen.add(token)
 
     def dump(self):
         import json

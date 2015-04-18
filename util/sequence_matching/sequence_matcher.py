@@ -65,6 +65,14 @@ class SequenceMatcher(object):
             self._canbeempty_per_block.append(can_be_empty)
             self._value2optionxx_per_block.append(value2optionxx)
 
+    def dump(self):
+        print 'SequenceMatcher begin'
+        for i, block in enumerate(self._blocks):
+            print '\tblock %d:' % i
+            for j, option in enumerate(block):
+                print '\t\toption %d: %s' % (j, option)
+        print 'SequenceMatcher end'
+
     def _each_match_that_starts_at_inner(
             self, items, begin_item_index, option_choices):
         """
@@ -97,7 +105,9 @@ class SequenceMatcher(object):
             for i, option_index in enumerate(option_choices):
                 option = self._blocks[i][option_index]
                 z_excl += len(option)
+            span = (a, z_excl)
             yield SequenceMatch(span, option_choices)
+            return
 
         # Else, if we're out of items, the match was a failure.
         begin_item_index += len(values_to_match)
@@ -135,6 +145,7 @@ class SequenceMatcher(object):
                 for matches in self._each_match_list_that_starts_at(
                         items, resume_item_index):
                     yield [match] + matches
+                yield [match]
             item_index += 1
 
     def each_match_list(self, items):

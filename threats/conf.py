@@ -37,13 +37,13 @@ def annotated_lines(enum, s):
     return patterns, annotation
 
 
-SubjectCategory = enum('SubjectCategory: I_OR_WE SOMEONE_ELSE RELIGIOUS')
+SubjectCategory = enum('SubjectCategory: I WE SOMEONE_ELSE RELIGIOUS')
 
 
 SUBJECTS, SUBJECT_CATS = annotated_lines(SubjectCategory, """
-    (first person subject) -- i_or_we
-    (third person subject) -- someone_else
-    it -- someone_else
+    i -- i
+    we -- we
+    (perspro +subj +3rd +person) -- someone_else
     god -- religious
     satan -- religious
     allah -- religious
@@ -55,28 +55,16 @@ AuxVerbCategory = enum(
 
 
 AUX_VERBS, AUX_VERB_CATS = annotated_lines(AuxVerbCategory, """
-    (to be) going to -- future
-    (to be) planning to -- future
-    (to plan) to -- future
-    (to promise) (first person subject) (to be) going to -- future
-    (to promise) (third person subject) (to be) going to -- future
-    (to promise) it (to be) going to -- future
-    (to promise) (first person subject) (to be) gonna -- future
-    (to promise) (third person subject) (to be) gonna -- future
-    (to promise) it (to be) gonna -- future
-    (to promise) (first person subject) will -- future
-    (to promise) (third person subject) will -- future
-    (to promise) it will -- future
-    (to swear) (first person subject) (to be) going to -- future
-    (to swear) (third person subject) (to be) going to -- future
-    (to swear) it (to be) going to -- future
-    (to swear) (first person subject) (to be) gonna -- future
-    (to swear) (third person subject) (to be) gonna -- future
-    (to swear) it (to be) gonna -- future
-    (to swear) (first person subject) will -- future
-    (to swear) (third person subject) will -- future
-    (to swear) it will -- future
-    (to want) to -- desire
+    (to be +pres) going to -- future
+    (to be +pres) planning to -- future
+    (to plan +pres) to -- future
+    (to promise +pres) (perspro +subj +1st +3rd) (to be +pres +1st +3rd) going to -- future
+    (to promise +pres) (perspro +subj +1st +3rd) (to be +pres +1st +3rd) gonna -- future
+    (to promise +pres) (perspro +subj +1st +3rd) (to be +pres +1st +3rd) will -- future
+    (to swear +pres) (perspro +subj +1st +3rd) (to be +pres +1st +3rd) going to -- future
+    (to swear +pres) (perspro +subj +1st +3rd) (to be +pres +1st +3rd) gonna -- future
+    (to swear +pres) (perspro +subj +1st +3rd) (to be +pres +1st +3rd) will -- future
+    (to want +pres) to -- desire
     wanna -- desire
     will -- future
     would -- conditional
@@ -96,18 +84,16 @@ ADVERBS = lines("""
 MAIN_VERBS = lines("""
     abduct
     choke
-    kick (nonher nonfirst possessive pronoun)
-    kick her
+    kick (pospro)
     kill
-    make (nonher nonfirst person object) a martyr
-    make her a martyr
-    make an example of
+    make (perspro +obj) a martyr
+    make an example of (perspro +obj)
     punch
     rape
     steal
     sucker punch
-    rip (nonher nonfirst possessive pronoun)
-    rip her
+    rip (pospro +obj)
+    rip (posdet)
     slap
     smack
     threaten

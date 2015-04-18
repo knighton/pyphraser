@@ -1,5 +1,6 @@
-from util.english.base import LingNumber, LingPerson, Tense
+from util.english.base import LingNumber, LingPerson
 from util.misc.combinatorics import each_choose_one_from_each_list
+from util.misc.enum import enum
 
 
 VerbFieldType = enum('VerbFieldType: LEMMA PRES_PART PAST_PART FINITE_PRES FINITE_PAST')

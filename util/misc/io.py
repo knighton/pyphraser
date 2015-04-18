@@ -36,7 +36,3 @@ def lines_from_table(
         lines.append(line)
 
     return lines
-
-
-def print_func(a):
-    print '%s' % a

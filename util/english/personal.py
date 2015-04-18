@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from util.english.base import LingGender, LingNumber, LingPerson
+from util.english.base import LingGender, LingNumber, LingPerson, LingPersonhood
 from util.misc.dicts import v2k_from_k2v, v2kk_from_k2v
 from util.misc.enum import enum
 from util.misc.table import Table
@@ -35,9 +35,9 @@ PRONOUN_PERCOL2INFO = {
     PersonalsColumn.NP_SUBJ:  (PersProCase.SUBJ, Poss.NO),
     PersonalsColumn.NP_OBJ:   (PersProCase.OBJ,  Poss.NO),
     PersonalsColumn.NP_REFL:  (PersProCase.REFL, Poss.NO),
-    PersonalsColumn.POS_SUBJ: (PersProCase.OBJ,  Poss.YES),
+    PersonalsColumn.POS_SUBJ: (PersProCase.SUBJ, Poss.YES),
     PersonalsColumn.POS_OBJ:  (PersProCase.OBJ,  Poss.YES),
-    PersonalsColumn.POS_REFL: (PersProCase.OBJ,  Poss.YES),
+    PersonalsColumn.POS_REFL: (PersProCase.REFL, Poss.YES),
 }
 
 
@@ -77,12 +77,12 @@ PERROW2INFO = {
 }
 
 
-INFO2PERROW = v2k_from_k2v(PERRROW2INFO)
+INFO2PERROWS = v2kk_from_k2v(PERROW2INFO)
 
 
 def personals_table_row_tuples_to_try(self, number, person, personhood, gender):
     """
-    The correct way to search the INFO2PERROW dict.
+    The correct way to search the INFO2PERROWS dict.
 
     Note: none of the 'who' forms have a 'personhood = no' option.  Use 'what'
     instead.
@@ -158,7 +158,10 @@ PERSONALS_TABLE = make_pronouns_table("""
 
 def make_pronoun_aliases(text):
     d = {}
-    for line in text.strip().split('\n')[2:]:
+    for line in text.split('\n'):
+        line = line.strip()
+        if not line:
+            continue
         canonical, other = line.split()
         d[other] = canonical
     return d
@@ -277,7 +280,7 @@ class PersonalsManager(object):
         """
         for key in personals_table_row_tuples_to_try(
                 number, person, personhood, gender):
-            row_names = INFO2PERROW.get(key)
+            row_names = INFO2PERROWS.get(key)
             if row_names:
                 if len(options) == 1:
                     return row_names[0]

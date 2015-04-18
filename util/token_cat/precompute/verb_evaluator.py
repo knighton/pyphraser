@@ -1,15 +1,17 @@
+from util.english.base import LingNumber, LingPerson
+from util.english.verb import VerbFieldType
 from util.token_cat.precompute.closed_class_type_evaluator import ClosedClassTypeEvaluator
 
 
 FILTERS = {
     'number': [
-        ('sing', Number.SING),
-        ('plur', Number.PLUR),
+        ('sing', LingNumber.SING),
+        ('plur', LingNumber.PLUR),
     ],
     'person': [
-        ('1st', Person.FIRST),
-        ('2nd', Person.SECOND),
-        ('3rd', Person.THIRD),
+        ('1st', LingPerson.FIRST),
+        ('2nd', LingPerson.SECOND),
+        ('3rd', LingPerson.THIRD),
     ],
     'verb_field_type': [
         ('lemma',    VerbFieldType.LEMMA),

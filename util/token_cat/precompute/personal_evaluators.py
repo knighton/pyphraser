@@ -1,6 +1,8 @@
 from copy import deepcopy
 
 from util.token_cat.precompute.closed_class_type_evaluator import ClosedClassTypeEvaluator
+from util.english.base import LingGender, LingNumber, LingPerson, LingPersonhood
+from util.english.personal import PersProCase, Poss
 
 
 BASE_FILTERS = {
@@ -9,23 +11,27 @@ BASE_FILTERS = {
         ('obj',  PersProCase.OBJ),
         ('refl', PersProCase.REFL),
     ],
+    'poss': [
+        ('np',  Poss.NO),
+        ('pos', Poss.YES),
+    ],
     'number': [
-        ('sing', Number.SING),
-        ('plur', Number.PLUR),
+        ('sing', LingNumber.SING),
+        ('plur', LingNumber.PLUR),
     ],
     'person': [
-        ('1st', Person.FIRST),
-        ('2nd', Person.SECOND),
-        ('3rd', Person.THIRD),
+        ('1st', LingPerson.FIRST),
+        ('2nd', LingPerson.SECOND),
+        ('3rd', LingPerson.THIRD),
     ],
     'personhood': [
-        ('thing',  Personhood.NO),
-        ('person', Personhood.YES),
+        ('thing',  LingPersonhood.NO),
+        ('person', LingPersonhood.YES),
     ],
     'gender': [
-        ('male', Gender.MALE),
-        ('female', Gender.FEMALE),
-        ('neuter', Gender.NEUTER),
+        ('male',   LingGender.MALE),
+        ('female', LingGender.FEMALE),
+        ('neuter', LingGender.NEUTER),
     ],
 }
 

@@ -41,7 +41,7 @@ class Expression(object):
             s = ss[i]
             if s.startswith('+'):
                 break
-            assert ARG_RE.match(s)
+            assert Expression.ARG_RE.match(s)
             args.append(s)
 
         filters = []
@@ -49,7 +49,7 @@ class Expression(object):
             s = ss[i]
             assert s.startswith('+')
             s = s[1:]
-            assert ARG_RE.match(s)
+            assert Expression.ARG_RE.match(s)
             filters.append(s)
         filters.sort()
 

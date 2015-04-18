@@ -1,3 +1,6 @@
+from util.token_cat.expression import Expression
+
+
 class BlockParser(object):
     """
     Parses human-readable SequenceMatcher config lines.
@@ -42,7 +45,7 @@ class BlockParser(object):
             for s in self._tokenize_pretty_line_normal_piece(text):
                 rr.append(s)
             text = line[a + 1:z]
-            rr.append(Expression.init_from_str(text))
+            rr.append(Expression.init_from_string(text))
             begin = z + 1
         end = len(line)
         text = line[begin:end]

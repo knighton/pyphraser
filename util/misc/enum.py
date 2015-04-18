@@ -26,7 +26,7 @@ class EnumManager(object):
             to_s
             from_s
         """.split())
-        self._key_re = re.compile('^[A-Z_]+$')
+        self._key_re = re.compile('^[A-Z_][A-Z0-9_]*$')
 
     def create(self, class_name, keys):
         """

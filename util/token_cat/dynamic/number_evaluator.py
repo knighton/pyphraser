@@ -1,7 +1,7 @@
 from collections import defaultdict
 import re
 
-from util.enum import enum
+from util.misc.enum import enum
 from util.token_cat.dynamic.open_class_type_evaluator import OpenClassTypeEvaluator
 
 

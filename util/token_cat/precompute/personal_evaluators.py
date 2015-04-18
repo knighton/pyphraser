@@ -57,7 +57,7 @@ class PersProEvaluator(ClosedClassTypeEvaluator):
     def __init__(self, personals_mgr):
         self._personals_mgr = personals_mgr
         self._filters = PERS_PRO_FILTERS
-        super(ClosedClassTypeEvaluator, self).__init__()
+        super(PersProEvaluator, self).__init__()
 
     def _get_filters(self):
         return self._filters
@@ -79,7 +79,7 @@ class PosProEvaluator(ClosedClassTypeEvaluator):
     def __init__(self, personals_mgr):
         self._personals_mgr = personals_mgr
         self._filters = POS_PRO_FILTERS
-        super(ClosedClassTypeEvaluator, self).___init__()
+        super(PosProEvaluator, self).___init__()
 
     def _get_filters(self):
         return self._filters

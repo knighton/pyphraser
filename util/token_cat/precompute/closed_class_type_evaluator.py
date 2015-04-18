@@ -8,11 +8,11 @@ class ClosedClassTypeEvaluator(object):
     """
 
     def __init__(self):
-        dimension2filters_values = self.get_filters()
+        dimension2filters_values = self._get_filters()
 
         self._dimension2filter2value = {}
         for dimension, filters_values in dimension2filters_values.iteritems():
-            self.dimension2filter2value[dimension] = dict(filters_values)
+            self._dimension2filter2value[dimension] = dict(filters_values)
 
         self._filter2dimension = {}
         self._filter2value = {}
@@ -23,7 +23,7 @@ class ClosedClassTypeEvaluator(object):
                 assert filter_value not in values_seen
                 values_seen.add(filter_value)
                 self._filter2dimension[filter_name] = dimension
-                self._filter2value[filter_name] = value
+                self._filter2value[filter_name] = filter_value
 
     def _get_filters(self):
         """

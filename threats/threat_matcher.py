@@ -1,6 +1,6 @@
 from threats import conf
 from threats.threat_tokenizer import ThreatTokenizer
-from util.seqmatch.phrases.phrase_matcher import PhraseMatcher
+from util.sequence_matching.phrase_matcher import PhraseMatcher
 
 
 class ThreatMatch(object):

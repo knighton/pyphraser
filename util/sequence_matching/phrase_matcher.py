@@ -1,5 +1,5 @@
 from util.token_cat.expression import Expression
-from util.token_cat.token_categorizer import EnglishTokenCategorizer
+from util.token_cat.english_token_categorizer import EnglishTokenCategorizer
 from util.sequence_matching.block_parser import BlockParser
 from util.sequence_matching.list_sequence_matcher import ListSequenceMatcher
 

@@ -62,7 +62,7 @@ class TokenCategorizer(object):
                 continue
 
             # Else, try it as an open-class type.
-            evaluator = key2open.get(expr.key()):
+            evaluator = key2open.get(expr.key())
             if evaluator:
                 assert evaluator.is_valid_expression(expr)
                 self._key2dynamic_exprs[expr.key()].append(expr)

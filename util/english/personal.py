@@ -1,7 +1,7 @@
 from collections import defaultdict
 
 from util.english.base import LingGender, LingNumber, LingPerson
-from util.misc.dicts import v2kk_from_k2v
+from util.misc.dicts import v2k_from_k2v, v2kk_from_k2v
 from util.misc.enum import enum
 from util.misc.table import Table
 
@@ -226,7 +226,7 @@ class PersonalsManager(object):
     def __init__(self, personals_table, other2canonical, idiolect):
         self._idiolect = idiolect
 
-        canonical2others = k2v_to_v2kk(other2canonical)
+        canonical2others = v2kk_from_k2v(other2canonical)
 
         assert set(personals_table.rows()) == PersonalsRow.values
         assert set(personals_table.columns()) == PersonalsColumn.values

@@ -100,13 +100,7 @@ class SequenceMatcher(object):
         # Ran out of sequences options to match means the match was a success.
         next_block_index = cur_block_index + 1
         if next_block_index == len(self._value2optionxx_per_block):
-            a = begin_item_index
-            z_excl = a
-            for i, option_index in enumerate(option_choices):
-                option = self._blocks[i][option_index]
-                z_excl += len(option)
-            span = (a, z_excl)
-            yield SequenceMatch(span, option_choices)
+            yield option_choices
             return
 
         # Else, if we're out of items, the match was a failure.
@@ -119,9 +113,9 @@ class SequenceMatcher(object):
         item = items[begin_item_index]
         for choice in self._get_possible_options(next_block_index, item):
             new_option_choices = option_choices + [choice]
-            for match in self._each_match_that_starts_at_inner(
+            for choices in self._each_match_that_starts_at_inner(
                     items, begin_item_index, new_option_choices):
-                yield match
+                yield choices
 
     def _each_match_that_starts_at(self, items, item_index):
         """
@@ -131,9 +125,15 @@ class SequenceMatcher(object):
         item = items[item_index]
         for option_index in self._get_possible_options(first_block, item):
             option_choices = [option_index]
-            for match in self._each_match_that_starts_at_inner(
+            for total_option_choices in self._each_match_that_starts_at_inner(
                     items, item_index, option_choices):
-                yield match
+                a = item_index
+                z_excl = a
+                for i, option_index in enumerate(total_option_choices):
+                    option = self._blocks[i][option_index]
+                    z_excl += len(option)
+                span = (a, z_excl)
+                yield SequenceMatch(span, total_option_choices)
 
     def _each_match_list_that_starts_at(self, items, item_index):
         """

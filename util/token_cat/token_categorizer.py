@@ -8,7 +8,7 @@ class Token(object):
 
 
 class Category(object):
-    def __init__(self, cat_id, expr, expr_str, instances):
+    def __init__(self, cat_id, expr, instances):
         self.cat_id = cat_id       # Index in _cats.
         self.expr = expr           # Expression.
         self.intances = instances  # List of str.

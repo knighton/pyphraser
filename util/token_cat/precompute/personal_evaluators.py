@@ -62,7 +62,7 @@ class PersProEvaluator(ClosedClassTypeEvaluator):
     def _get_filters(self):
         return self._filters
 
-    def _each_with_attrs(self, args):
+    def _each_token_with_attrs(self, args):
         assert not args
         for token, ppi in self._personals_mgr.each_pronoun_with_attrs():
             if ppi.poss == Poss.YES:
@@ -79,12 +79,12 @@ class PosProEvaluator(ClosedClassTypeEvaluator):
     def __init__(self, personals_mgr):
         self._personals_mgr = personals_mgr
         self._filters = POS_PRO_FILTERS
-        super(PosProEvaluator, self).___init__()
+        ClosedClassTypeEvaluator.__init__(self)
 
     def _get_filters(self):
         return self._filters
 
-    def _each_with_attrs(self, args):
+    def _each_token_with_attrs(self, args):
         assert not args
         for token, ppi in self._personals_mgr.each_pronoun_with_attrs():
             if ppi.poss == Poss.NO:
@@ -106,7 +106,7 @@ class PosDetEvaluator(ClosedClassTypeEvaluator):
     def _get_filters(self):
         return self._filters
 
-    def _each_with_attrs(self, args):
+    def _each_token_with_attrs(self, args):
         assert not args
         for token, pdi in self._personals_mgr.each_determiner_with_attrs():
             yield token, pdi.to_d()

@@ -38,16 +38,23 @@ class PhraseMatcher(object):
         return rr
 
     def _make_blocks_as_lists(self, blocks_as_exprs):
+        new_blocks = []
         for block in blocks_as_exprs:
+            new_block = []
             for option in block:
+                new_option = []
                 for a in option:
                     if isinstance(a, basestring):
                         new_option.append(a)
                     elif isinstance(a, Expression):
-                        cat_id = self._token_categorizer.get_category_id(a)
+                        cat_id = \
+                            self._token_categorizer.get_category_id_of_expr(a)
                         new_option.append(cat_id)
                     else:
                         assert False
+                new_block.append(new_option)
+            new_blocks.append(new_block)
+        return new_blocks
 
     def _preprocess_input_tokens(self, ss):
         """

@@ -27,7 +27,7 @@ class VerbEvaluator(ClosedClassTypeEvaluator):
     def __init__(self, conjugator):
         self._conjugator = conjugator
         self._filters = FILTERS
-        super(VerbExpressionEvaluator, self).__init__()
+        super(VerbEvaluator, self).__init__()
 
     def _get_filters(self):
         return self._filters
@@ -36,5 +36,5 @@ class VerbEvaluator(ClosedClassTypeEvaluator):
         lemma = args[0]
         assert len(args) == 1
         spec = self._conjugator.conjugate(lemma)
-        for token, verb_info in spec.each_field():
+        for token, verb_info in spec.each_field_with_attrs():
             yield token, verb_info.to_d()

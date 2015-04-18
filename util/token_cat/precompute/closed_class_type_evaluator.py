@@ -1,3 +1,6 @@
+from collections import defaultdict
+
+
 class ClosedClassTypeEvaluator(object):
     """
     Has a black box that yields tokens and their attributes and the knowledge of
@@ -65,12 +68,12 @@ class ClosedClassTypeEvaluator(object):
         Expression -> yields the tokens that match the filters.
         """
         filter_dim2values = defaultdict(list)
-        for filter_name in expr.filters:
-            dimension = self._filter2dim[filter_name]
+        for filter_name in expr.filters():
+            dimension = self._filter2dimension[filter_name]
             value = self._filter2value[filter_name]
             filter_dim2values[dimension].append(value)
 
-        for token, have_dim2value in self.each_token_with_attrs(expr.args):
+        for token, have_dim2value in self._each_token_with_attrs(expr.args()):
             if self._is_match(have_dim2value, filter_dim2values):
                 yield token
 

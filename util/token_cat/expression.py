@@ -66,7 +66,7 @@ class Expression(object):
     def filters(self):
         return self._filters
 
-    def to_canonical_str(self):
+    def to_canonical_string(self):
         if self._to_s:
             return self._to_s
 

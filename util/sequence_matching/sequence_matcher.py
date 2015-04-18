@@ -1,5 +1,7 @@
 # TODO: match empty options.
 
+from collections import defaultdict
+
 from util.sequence_matching.sequence_match import SequenceMatch
 
 
@@ -47,17 +49,17 @@ class SequenceMatcher(object):
                 assert key not in seen
                 seen.add(key)
 
-        # Index the first item of each option per formance.
+        # Index the first value of each option for performance.
         self._value2optionxx_per_block = []
         self._canbeempty_per_block = []
+
         for i, block in enumerate(self._blocks):
             can_be_empty = False
-            value2optionxx = {}
+            value2optionxx = defaultdict(list)
             for j, option in enumerate(block):
                 if option:
-                    first_item = option[0]
-                    for value in self._values_from_item(first_item):
-                        value2optionxx[value].append(j)
+                    first_value = option[0]
+                    value2optionxx[first_value].append(j)
                 else:
                     can_be_empty = True
             self._canbeempty_per_block.append(can_be_empty)

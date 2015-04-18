@@ -44,9 +44,10 @@ class TokenCategorizer(object):
 
         for expr in expressions:
             # Contine if we have seen the Expression before.
-            s = expr.to_canonical_str()
+            s = expr.to_canonical_string()
             if s in self._exprstr2catid:
                 continue
+
 
             # If it was recognized a closed-class type, create a new Category. 
             #
@@ -57,6 +58,7 @@ class TokenCategorizer(object):
                 cat_id = len(self._categories)
                 cat = Category(cat_id, expr, ss)
                 self._categories.append(cat)
+                self._exprstr2catid[expr.to_canonical_string()] = cat_id
                 for s in ss:
                     self._s2catids[s].append(cat_id)
                 continue
@@ -90,7 +92,7 @@ class TokenCategorizer(object):
             evaluator = self._key2open_class_evaluator[key]
             for expr in dynamic_expr:
                 if evaluator.is_match(expr, s):
-                    cat_id = self._exprstr2catid[expr.to_canonical_str()]
+                    cat_id = self._exprstr2catid[expr.to_canonical_string()]
                     cat_ids.append(expr)
             if cat_ids:
                 return cat_ids
@@ -102,5 +104,5 @@ class TokenCategorizer(object):
         """
         Expression -> Category ID.
         """
-        s = expr.to_canonical_str()
+        s = expr.to_canonical_string()
         return self._exprstr2catid[s]

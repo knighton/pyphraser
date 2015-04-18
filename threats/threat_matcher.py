@@ -33,7 +33,7 @@ class ThreatMatcher(object):
             conf.SUBJECTS, conf.SUBJECT_CATS, conf.AUX_VERBS,
             conf.AUX_VERB_CATS, conf.ADVERBS, conf.MAIN_VERBS)
 
-    def match(self, text, allow_overlapping):
+    def each_match_list(self, text):
         """
         Text, whether overlapping -> yields list of ThreatMatch.
         """

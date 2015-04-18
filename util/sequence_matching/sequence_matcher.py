@@ -99,18 +99,18 @@ class SequenceMatcher(object):
                 z_excl += len(option)
             yield SequenceMatch(span, option_choices)
 
-        # Else, if we're out of tokens, the match was a failure.
+        # Else, if we're out of items, the match was a failure.
         begin_item_index += len(values_to_match)
         if begin_item_index == len(items):
             return
 
-        # We have tokens and sequences to match left, so try to match the
+        # We have items and sequences to match left, so try to match the
         # beginning of the next sequence.
         item = items[begin_item_index]
         for choice in self._get_possible_options(next_block_index, item):
             new_option_choices = option_choices + [choice]
             for match in self._each_match_that_starts_at_inner(
-                    items, begin_token_index, new_option_choices):
+                    items, begin_item_index, new_option_choices):
                 yield match
 
     def _each_match_that_starts_at(self, items, item_index):
@@ -119,7 +119,7 @@ class SequenceMatcher(object):
         """
         first_block = 0
         item = items[item_index]
-        for option_index in self._get_possible_options(self, first_block, item):
+        for option_index in self._get_possible_options(first_block, item):
             option_choices = [option_index]
             for match in self._each_match_that_starts_at_inner(
                     items, item_index, option_choices):

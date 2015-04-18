@@ -48,7 +48,7 @@ class Table(object):
             row_keys.append(s)
 
         column_keys = []
-        for i in xrange(1, len(sss[0])):
+        for i in xrange(len(sss[0])):
             s = sss[0][i]
             if handle_column_key:
                 s = handle_column_key(s)

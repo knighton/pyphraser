@@ -43,6 +43,7 @@ class Expression(object):
                 break
             assert Expression.ARG_RE.match(s)
             args.append(s)
+            i += 1
 
         filters = []
         while i < len(ss):
@@ -51,6 +52,7 @@ class Expression(object):
             s = s[1:]
             assert Expression.ARG_RE.match(s)
             filters.append(s)
+            i += 1
         filters.sort()
 
         return Expression(key, args, filters)

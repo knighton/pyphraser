@@ -40,6 +40,10 @@ PERS_PRO_FILTERS = deepcopy(BASE_FILTERS)
 del PERS_PRO_FILTERS['poss']
 
 
+POS_PRO_FILTERS = deepcopy(BASE_FILTERS)
+del POS_PRO_FILTERS['poss'] 
+
+
 POS_DET_FILTERS = deepcopy(BASE_FILTERS)
 del POS_DET_FILTERS['case']
 del POS_DET_FILTERS['poss']

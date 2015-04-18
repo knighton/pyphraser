@@ -101,12 +101,12 @@ class Idiolect(object):
     YOU2_OPTIONS = tuple(sorted([PersonalsRow.YOU2, PersonalsRow.YALL]))
 
     def __init__(self, you_or_thou, you_or_yall):
-        assert you_or_thou in YOU1_OPTIONS
-        assert you_or_yall in YOU2_OPTIONS
+        assert you_or_thou in Idiolect.YOU1_OPTIONS
+        assert you_or_yall in Idiolect.YOU2_OPTIONS
 
         self._options2choice = {
-            YOU1_OPTIONS: you_or_thou,
-            YOU2_OPTIONS: you_or_yall,
+            Idiolect.YOU1_OPTIONS: you_or_thou,
+            Idiolect.YOU2_OPTIONS: you_or_yall,
         }
 
     @staticmethod
@@ -262,6 +262,7 @@ class PersonalsManager(object):
             d = self._pronoun_s2infos
         d[s].append(info)
 
+    @staticmethod
     def init_default():
         idiolect = Idiolect.init_default()
         return PersonalsManager(PERSONALS_TABLE, OTHER2CANONICAL, idiolect)
